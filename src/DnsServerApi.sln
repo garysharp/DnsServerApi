@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29025.244
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dns", "Dns\Dns.csproj", "{BED62CED-4233-4065-A05E-1655964F1B90}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dns.WindowsDnsServer", "Dns.WindowsDnsServer\Dns.WindowsDnsServer.csproj", "{A7ABEBDD-BC30-47F9-99AC-491D6F058D6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dns.MockDnsServer", "Dns.MockDnsServer\Dns.MockDnsServer.csproj", "{5B281C25-C698-4A20-BA34-B91F58C5F440}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dns.MockDnsServer.Demo", "Dns.MockDnsServer.Demo\Dns.MockDnsServer.Demo.csproj", "{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BED62CED-4233-4065-A05E-1655964F1B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BED62CED-4233-4065-A05E-1655964F1B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BED62CED-4233-4065-A05E-1655964F1B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BED62CED-4233-4065-A05E-1655964F1B90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7ABEBDD-BC30-47F9-99AC-491D6F058D6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7ABEBDD-BC30-47F9-99AC-491D6F058D6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7ABEBDD-BC30-47F9-99AC-491D6F058D6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7ABEBDD-BC30-47F9-99AC-491D6F058D6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B281C25-C698-4A20-BA34-B91F58C5F440}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B281C25-C698-4A20-BA34-B91F58C5F440}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B281C25-C698-4A20-BA34-B91F58C5F440}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B281C25-C698-4A20-BA34-B91F58C5F440}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D70C3A15-82B4-4A11-9913-EA615988B103}
+	EndGlobalSection
+EndGlobal
