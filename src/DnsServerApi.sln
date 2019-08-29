@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dns", "Dns\Dns.csproj", "{B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dns.WindowsDnsServer", "Dns.WindowsDnsServer\Dns.WindowsDnsServer.csproj", "{A7ABEBDD-BC30-47F9-99AC-491D6F058D6C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dns.MockDnsServer", "Dns.MockDnsServer\Dns.MockDnsServer.csproj", "{5B281C25-C698-4A20-BA34-B91F58C5F440}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dns.MockDnsServer", "Dns.MockDnsServer\Dns.MockDnsServer.csproj", "{5B281C25-C698-4A20-BA34-B91F58C5F440}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dns.MockDnsServer.Demo", "Dns.MockDnsServer.Demo\Dns.MockDnsServer.Demo.csproj", "{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dns.MockDnsServer.Demo", "Dns.MockDnsServer.Demo\Dns.MockDnsServer.Demo.csproj", "{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dns.WindowsDnsServer.Demo", "Dns.WindowsDnsServer.Demo\Dns.WindowsDnsServer.Demo.csproj", "{C51E3899-2F2B-4D84-8703-0D7E7CDDAF70}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C2DBC54-E9D4-4165-B003-42FFE4AF35E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C51E3899-2F2B-4D84-8703-0D7E7CDDAF70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C51E3899-2F2B-4D84-8703-0D7E7CDDAF70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C51E3899-2F2B-4D84-8703-0D7E7CDDAF70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C51E3899-2F2B-4D84-8703-0D7E7CDDAF70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

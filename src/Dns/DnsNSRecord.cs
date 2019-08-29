@@ -44,11 +44,23 @@ namespace Dns
         /// <summary>
         /// Constructs a new instance of <see cref="DnsNSRecord"/>.
         /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="nameServer">A host which should be authoritative for the domain</param>
+        public DnsNSRecord(DnsZone zone, string name, TimeSpan timeToLive, string nameServer)
+            : this(zone, name, DnsRecordClasses.IN, timeToLive, nameServer)
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsNSRecord"/>.
+        /// </summary>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nameServer">A host which should be authoritative for the domain</param>
         public DnsNSRecord(string name, TimeSpan timeToLive, string nameServer)
-            : this(zone: null, name, DnsRecordClasses.IN, timeToLive, nameServer)
+            : this(zone: null, name, timeToLive, nameServer)
         {
         }
 

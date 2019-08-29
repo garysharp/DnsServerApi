@@ -28,7 +28,7 @@ namespace Dns.MockDnsServer
             return CreateZone(zoneTemplate.DomainName);
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc/> 
         public override DnsZone CreateZone(string domainName)
         {
             if (string.IsNullOrWhiteSpace(domainName))

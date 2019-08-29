@@ -101,6 +101,27 @@ namespace Dns
         /// <summary>
         /// Constructs a new instance of <see cref="DnsSOARecord"/>.
         /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="primaryServer">Domain Name of the original or primary source of data for this zone</param>
+        /// <param name="responsiblePerson">A domain name which specifies the mailbox of the person responsible for this zone</param>
+        /// <param name="serial">Version number of the zone</param>
+        /// <param name="refreshInterval">Interval before the zone should be refreshed</param>
+        /// <param name="retryDelay">Time interval that should elapse before a failed refresh should be retried</param>
+        /// <param name="expireLimit">The upper limit on the time interval that can elapse before the zone is no longer authoritative</param>
+        /// <param name="minimumTimeToLive">The minimum time-to-live (TTL) that should be exported with an record from this zone</param>
+        public DnsSOARecord(DnsZone zone, string name, TimeSpan timeToLive,
+            string primaryServer, string responsiblePerson, uint serial, TimeSpan refreshInterval,
+            TimeSpan retryDelay, TimeSpan expireLimit, TimeSpan minimumTimeToLive)
+            : this(zone, name, DnsRecordClasses.IN, timeToLive, primaryServer, responsiblePerson,
+                  serial, refreshInterval, retryDelay, expireLimit, minimumTimeToLive)
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsSOARecord"/>.
+        /// </summary>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="primaryServer">Domain Name of the original or primary source of data for this zone</param>
@@ -113,7 +134,7 @@ namespace Dns
         public DnsSOARecord(string name, TimeSpan timeToLive,
             string primaryServer, string responsiblePerson, uint serial, TimeSpan refreshInterval,
             TimeSpan retryDelay, TimeSpan expireLimit, TimeSpan minimumTimeToLive)
-            : this(zone: null, name, DnsRecordClasses.IN, timeToLive, primaryServer, responsiblePerson,
+            : this(zone: null, name, timeToLive, primaryServer, responsiblePerson,
                   serial, refreshInterval, retryDelay, expireLimit, minimumTimeToLive)
         {
         }

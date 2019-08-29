@@ -32,29 +32,26 @@ namespace Dns.MockDnsServer.Demo
                 soa.Save();
                 // or: zone.SaveRecord(soa);
 
-                // create host record
+                // create host record via template
                 var hostTemplate = new DnsARecord("myhost.myzone.mock", TimeSpan.FromHours(1), "192.168.1.50");
                 var hostRecord = zone.CreateRecord(hostTemplate);
 
-                // add second host record
+                // add second host record (with template)
                 hostTemplate.IpAddress = "192.168.1.51";
                 var hostRecord2 = zone.CreateRecord(hostTemplate);
 
                 // create alias record
-                var cnameTemplate = new DnsCNAMERecord("myhostalias.myzone.mock", TimeSpan.FromHours(1), "myhost.myzone.mock");
-                var cnameRecord = zone.CreateRecord(cnameTemplate);
+                var cnameRecord = zone.CreateCNAMERecord("myhostalias.myzone.mock", TimeSpan.FromHours(1), "myhost.myzone.mock");
 
                 // create service locator record
-                var srvTemplate = new DnsSRVRecord(
-                        domainName: "myzone.mock",
-                        service: DnsSRVRecord.ServiceNames.LDAP,
-                        protocol: DnsSRVRecord.ProtocolNames.TCP,
-                        timeToLive: TimeSpan.FromHours(1),
-                        priority: 0,
-                        weight: 10,
-                        port: DnsSRVRecord.ServicePorts.LDAP,
-                        targetDomainName: "mycontroller.myzone.mock");
-                var srvRecord = zone.CreateRecord(srvTemplate);
+                var srvRecord = zone.CreateSRVRecord(
+                    service: DnsSRVRecord.ServiceNames.LDAP,
+                    protocol: DnsSRVRecord.ProtocolNames.TCP,
+                    timeToLive: TimeSpan.FromHours(1),
+                    priority: 0,
+                    weight: 10,
+                    port: DnsSRVRecord.ServicePorts.LDAP,
+                    targetDomainName: "mycontroller.myzone.mock");
 
                 // delete record
                 hostRecord.Delete();

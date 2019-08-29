@@ -37,6 +37,17 @@ namespace Dns
         /// <summary>
         /// Constructs a new instance of <see cref="DnsIpAddress"/>.
         /// </summary>
+        /// <param name="address">Text representation of the IP Address</param>
+        /// <param name="index">Character index to being parsing the IP Address</param>
+        /// <param name="length">Number of characters in the IP Address</param>
+        public DnsIpAddress(string address, int index, int length)
+        {
+            this.address = BitHelper.StringToIpAddress(address, index, length);
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsIpAddress"/>.
+        /// </summary>
         /// <param name="address">Framework representation of the IP Address</param>
         public DnsIpAddress(IPAddress address)
         {
@@ -84,6 +95,22 @@ namespace Dns
         }
 
         /// <summary>
+        /// Flips the address so that the first, second, third and forth octet become the forth, third, second and first.
+        /// </summary>
+        /// <returns>A flipped IP Address</returns>
+        public DnsIpAddress GetFlipped()
+        {
+            // rotate octets
+            var flippedAddress =
+                ((address << 24) & 0xFF_00_00_00) |
+                ((address << 16) & 0x00_FF_00_00) |
+                ((address >> 16) & 0x00_00_FF_00) |
+                ((address >> 24) & 0x00_00_00_FF);
+
+            return new DnsIpAddress(flippedAddress);
+        }
+
+        /// <summary>
         /// Constructs an empty IP Address (0.0.0.0)
         /// </summary>
         public static DnsIpAddress Empty => new DnsIpAddress(0);
@@ -105,6 +132,20 @@ namespace Dns
         /// <param name="address">Text representation of the IP Address</param>
         /// <returns>An IP Address</returns>
         public static DnsIpAddress FromString(string address) => new DnsIpAddress(address);
+        /// <summary>
+        /// Constructs an IP Address from a PTR text representation
+        /// </summary>
+        /// <param name="ptrAddress">PTR text representation of the IP Address</param>
+        /// <returns>An IP Address</returns>
+        public static DnsIpAddress FromPTRAddress(string ptrAddress)
+        {
+            var index = 0;
+            for (int i = 0; i < 4; i++)
+                index = ptrAddress.IndexOf('.', index);
+
+            var address = new DnsIpAddress(ptrAddress, 0, index);
+            return address.GetFlipped();
+        }
 
         /// <summary>
         /// Returns a textual representation of the current instance data

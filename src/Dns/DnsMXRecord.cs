@@ -52,12 +52,25 @@ namespace Dns
         /// <summary>
         /// Constructs a new instance of <see cref="DnsMXRecord"/>.
         /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="preference">Preference given to this record</param>
+        /// <param name="domainName">Mail Exchange Domain Name</param>
+        public DnsMXRecord(DnsZone zone, string name, TimeSpan timeToLive, ushort preference, string domainName)
+            : this(zone, name, DnsRecordClasses.IN, timeToLive, preference, domainName)
+        {
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsMXRecord"/>.
+        /// </summary>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="preference">Preference given to this record</param>
         /// <param name="domainName">Mail Exchange Domain Name</param>
         public DnsMXRecord(string name, TimeSpan timeToLive, ushort preference, string domainName)
-            : this(zone: null, name, DnsRecordClasses.IN, timeToLive, preference, domainName)
+            : this(zone: null, name, timeToLive, preference, domainName)
         {
         }
 
