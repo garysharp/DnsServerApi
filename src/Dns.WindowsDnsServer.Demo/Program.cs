@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Dns.WindowsDnsServer.Demo
 {
@@ -10,12 +11,14 @@ namespace Dns.WindowsDnsServer.Demo
         {
 
             // connect to DNS server
+            Console.Write($"Connecting to {Environment.GetEnvironmentVariable("DnsServerAddress")}...");
             using (var server = WindowsDnsServer.Connect(
                 Environment.GetEnvironmentVariable("DnsServerAddress"),
                 Environment.GetEnvironmentVariable("DnsServerAuthority"),
                 Environment.GetEnvironmentVariable("DnsServerUsername"),
                 Environment.GetEnvironmentVariable("DnsServerPassword")))
             {
+                WriteLine(" [Done]");
 
                 DumpDnsServer(server);
 
@@ -39,8 +42,18 @@ namespace Dns.WindowsDnsServer.Demo
         {
             WriteLine(zone);
 
+            var soa = zone.StartOfAuthority;
+            WriteLine("Start Of Authority:");
+            WriteLine($"      Primary Server: {soa.PrimaryServer}");
+            WriteLine($"  Responsible Person: {soa.ResponsiblePerson}");
+            WriteLine($"              Serial: {soa.Serial}");
+            WriteLine($"    Refresh Interval: {soa.RefreshInterval}");
+            WriteLine($"         Retry Delay: {soa.RetryDelay}");
+            WriteLine($"        Expire Limit: {soa.ExpireLimit}");
+            WriteLine($"         Minimum TTL: {soa.MinimumTimeToLive}");
+            WriteLine();
             WriteLine("Records:");
-            foreach (var record in zone.Records)
+            foreach (var record in zone.Records.Where(r => r.Type != DnsRecordTypes.SOA))
             {
                 WriteLine(record);
             }

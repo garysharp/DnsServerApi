@@ -15,7 +15,7 @@ namespace Dns.WindowsDnsServer
 
         private IEnumerable<DnsRecord> GetRecords()
         {
-            var query = new ObjectQuery($"SELECT OwnerName, RecordClass, RecordData, TTL FROM MicrosoftDNS_ResourceRecord WHERE DomainName='{DomainName}'");
+            var query = new ObjectQuery($"SELECT OwnerName, RecordClass, RecordData, TTL FROM MicrosoftDNS_ResourceRecord WHERE ContainerName='{DomainName}'");
             using (var searcher = new ManagementObjectSearcher(((WindowsDnsServer)Server).Scope, query))
             {
                 using (var results = searcher.Get())
@@ -35,6 +35,8 @@ namespace Dns.WindowsDnsServer
                         }
                         catch (NotSupportedException)
                         {
+                            // TODO: Support all Microsoft DNS record types
+
                             // skip records which are not supported by the library
                             continue;
                         }
@@ -42,6 +44,31 @@ namespace Dns.WindowsDnsServer
                         yield return record;
                     }
                 }
+            }
+        }
+
+        public override DnsSOARecord StartOfAuthority {
+            get
+            {
+                var query = new ObjectQuery($"SELECT OwnerName, RecordClass, RecordData, TTL FROM MicrosoftDNS_SOAType WHERE ContainerName='{DomainName}'");
+                using (var searcher = new ManagementObjectSearcher(((WindowsDnsServer)Server).Scope, query))
+                {
+                    using (var results = searcher.Get())
+                    {
+                        foreach (var result in results)
+                        {
+                            var wmiClass = (string)result["__CLASS"];
+                            var ownerName = (string)result["OwnerName"];
+                            var recordClass = (ushort)result["RecordClass"];
+                            var recordData = (string)result["RecordData"];
+                            var ttl = (uint)result["TTL"];
+
+                            return (DnsSOARecord)WindowsDnsRecordHelpers.ParseRecord(this, wmiClass, ownerName, recordClass, ttl, recordData);
+                        }
+                    }
+                }
+
+                throw new Exception("Record not found");
             }
         }
 
