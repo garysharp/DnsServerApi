@@ -16,13 +16,26 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsARecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="ipAddress">IP address of the Host (A) record</param>
+        public DnsARecord(DnsZone zone, object providerState, string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
+            : base(zone, providerState, name, DnsRecordTypes.A, DnsRecordClasses.IN, timeToLive)
+        {
+            IpAddress = ipAddress;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsARecord"/>.
+        /// </summary>
+        /// <param name="zone">Associated zone</param>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="ipAddress">IP address of the Host (A) record</param>
         public DnsARecord(DnsZone zone, string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
-            : base(zone, name, DnsRecordTypes.A, DnsRecordClasses.IN, timeToLive)
+            : this(zone, providerState: null, name, timeToLive, ipAddress)
         {
-            IpAddress = ipAddress;
         }
 
         /// <summary>
@@ -40,9 +53,10 @@ namespace Dns
         /// Clones the record associating it with the provided zone
         /// </summary>
         /// <param name="zone">Record associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone)
-            => new DnsARecord(zone, Name, TimeToLive, IpAddress);
+        public override DnsRecord Clone(DnsZone zone, object providerState)
+            => new DnsARecord(zone, providerState, Name, TimeToLive, IpAddress);
 
         /// <summary>
         /// Returns a textual representation of the current instance data

@@ -16,17 +16,31 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsNSRecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <param name="name">Owner name</param>
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nameServer">A host which should be authoritative for the domain</param>
-        public DnsNSRecord(DnsZone zone, string name, DnsRecordClasses @class, TimeSpan timeToLive, string nameServer)
-            : base(zone, name, DnsRecordTypes.NS, @class, timeToLive)
+        public DnsNSRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string nameServer)
+            : base(zone, providerState, name, DnsRecordTypes.NS, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(nameServer))
                 throw new ArgumentNullException(nameof(nameServer));
 
             NameServer = nameServer;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsNSRecord"/>.
+        /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="class">Record class</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="nameServer">A host which should be authoritative for the domain</param>
+        public DnsNSRecord(DnsZone zone, string name, DnsRecordClasses @class, TimeSpan timeToLive, string nameServer)
+            : this(zone, providerState: null, name, @class, timeToLive, nameServer)
+        {
         }
 
         /// <summary>
@@ -68,9 +82,10 @@ namespace Dns
         /// Clones the record associating it with the provided zone
         /// </summary>
         /// <param name="zone">Record associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone)
-            => new DnsNSRecord(zone, Name, Class, TimeToLive, NameServer);
+        public override DnsRecord Clone(DnsZone zone, object providerState)
+            => new DnsNSRecord(zone, providerState, Name, Class, TimeToLive, NameServer);
 
         /// <summary>
         /// Returns a textual representation of the current instance data

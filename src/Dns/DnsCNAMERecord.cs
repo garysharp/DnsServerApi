@@ -16,17 +16,31 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsCNAMERecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <param name="name">Owner name</param>
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="primaryName">Primary Name for <see cref="DnsRecord.Name"/></param>
-        public DnsCNAMERecord(DnsZone zone, string name, DnsRecordClasses @class, TimeSpan timeToLive, string primaryName)
-            : base(zone, name, DnsRecordTypes.CNAME, @class, timeToLive)
+        public DnsCNAMERecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string primaryName)
+            : base(zone, providerState, name, DnsRecordTypes.CNAME, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(primaryName))
                 throw new ArgumentNullException(nameof(primaryName));
 
             PrimaryName = primaryName;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsCNAMERecord"/>.
+        /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="class">Record class</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="primaryName">Primary Name for <see cref="DnsRecord.Name"/></param>
+        public DnsCNAMERecord(DnsZone zone, string name, DnsRecordClasses @class, TimeSpan timeToLive, string primaryName)
+            : this(zone, providerState: null, name, @class, timeToLive, primaryName)
+        {
         }
 
         /// <summary>
@@ -68,9 +82,10 @@ namespace Dns
         /// Clones the record associating it with the provided zone
         /// </summary>
         /// <param name="zone">Record associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone)
-            => new DnsCNAMERecord(zone, Name, Class, TimeToLive, PrimaryName);
+        public override DnsRecord Clone(DnsZone zone, object providerState)
+            => new DnsCNAMERecord(zone, providerState, Name, Class, TimeToLive, PrimaryName);
 
         /// <summary>
         /// Returns a textual representation of the current instance data

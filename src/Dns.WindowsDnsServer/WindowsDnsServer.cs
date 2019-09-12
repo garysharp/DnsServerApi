@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management;
 using System.Security;
 
@@ -9,15 +10,26 @@ namespace Dns.WindowsDnsServer
     {
         private readonly ConnectionOptions connectionOptions;
 
+        public string Name { get; }
+        internal ManagementPath Path { get; }
         internal ManagementScope Scope { get; }
+
         public override IEnumerable<DnsZone> Zones => GetZones();
 
         private WindowsDnsServer(string domainName, ConnectionOptions connectionOptions)
-            :base(domainName)
+            : base(domainName)
         {
             this.connectionOptions = connectionOptions;
             Scope = new ManagementScope($@"\\{domainName}\ROOT\MicrosoftDNS", connectionOptions);
             Scope.Connect();
+
+            var server = this.WmiGetInstances("MicrosoftDNS_Server").FirstOrDefault();
+
+            if (server == null)
+                throw new ArgumentException("DNS Server instance not found", nameof(domainName));
+
+            Path = new ManagementPath((string)server["__PATH"]);
+            Name = (string)server.Properties["Name"].Value;
         }
 
         public static WindowsDnsServer Connect(string domainName)
@@ -57,16 +69,9 @@ namespace Dns.WindowsDnsServer
 
         private IEnumerable<DnsZone> GetZones()
         {
-            var query = new ObjectQuery("SELECT ContainerName FROM MicrosoftDNS_Zone");
-            using (var searcher = new ManagementObjectSearcher(Scope, query))
+            foreach (var result in this.WmiGetInstances("MicrosoftDNS_Zone"))
             {
-                using (var results = searcher.Get())
-                {
-                    foreach (var result in results)
-                    {
-                        yield return new WindowsDnsZone(this, (string)result["ContainerName"]);
-                    }
-                }
+                yield return new WindowsDnsZone(this, result);
             }
         }
 
@@ -92,7 +97,19 @@ namespace Dns.WindowsDnsServer
 
         public override DnsZone GetZone(string domainName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(domainName))
+                throw new ArgumentNullException(nameof(domainName));
+
+            try
+            {
+                var result = this.WmiGetInstance("MicrosoftDNS_Zone", $"ContainerName=\"{domainName}\",DnsServerName=\"{Name}\",Name=\"{domainName}\"");
+                return new WindowsDnsZone(this, result);
+            }
+            catch (ManagementException me) when (string.Equals(me.Message, "Generic failure ", StringComparison.Ordinal))
+            {
+                throw new ArgumentException("Zone not found", nameof(domainName));
+            }
         }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Management;
 
 namespace Dns.WindowsDnsServer
 {
@@ -9,11 +10,15 @@ namespace Dns.WindowsDnsServer
         private static readonly char[] recordDataSeperators = new char[] { ' ' };
         private static readonly Dictionary<string, DnsRecordClasses> classMap;
         private static readonly Dictionary<string, DnsRecordTypes> wmiClassMap;
-        private static readonly Dictionary<DnsRecordTypes, Func<WindowsDnsZone, string, DnsRecordClasses, TimeSpan, string, DnsRecord>> recordParserMap;
+        private static readonly Dictionary<DnsRecordTypes, string> wmiClassMapReverse;
+        private static readonly Dictionary<DnsRecordTypes, Func<WindowsDnsZone, WindowsDnsRecordState, string, DnsRecordClasses, TimeSpan, string, DnsRecord>> recordParserMap;
 
         static WindowsDnsRecordHelpers()
         {
-            classMap = Enum.GetNames(typeof(DnsRecordClasses)).ToDictionary(k => k, k => (DnsRecordClasses)Enum.Parse(typeof(DnsRecordClasses), k));
+            classMap = Enum.GetValues(typeof(DnsRecordClasses))
+                .Cast<DnsRecordClasses>()
+                .ToDictionary(k => Enum.GetName(typeof(DnsRecordClasses), k), k => k);
+
             wmiClassMap = new Dictionary<string, DnsRecordTypes>()
             {
                 { "MicrosoftDNS_AAAAType", DnsRecordTypes.AAAA },
@@ -45,8 +50,9 @@ namespace Dns.WindowsDnsServer
                 { "MicrosoftDNS_WKSType", DnsRecordTypes.WKS },
                 { "MicrosoftDNS_X25Type", DnsRecordTypes.X25 },
             };
+            wmiClassMapReverse = wmiClassMap.ToDictionary(r => r.Value, r => r.Key);
 
-            recordParserMap = new Dictionary<DnsRecordTypes, Func<WindowsDnsZone, string, DnsRecordClasses, TimeSpan, string, DnsRecord>>()
+            recordParserMap = new Dictionary<DnsRecordTypes, Func<WindowsDnsZone, WindowsDnsRecordState, string, DnsRecordClasses, TimeSpan, string, DnsRecord>>()
             {
                 { DnsRecordTypes.A, ParseARecord },
                 { DnsRecordTypes.CNAME, ParseCNAMERecord },
@@ -58,67 +64,58 @@ namespace Dns.WindowsDnsServer
             };
         }
 
-        public static DnsRecord ParseRecord(WindowsDnsZone zone, string recordTextRepresentation, uint timeToLive)
+        public static DnsRecord ParseRecordInternal(this WindowsDnsZone zone, ManagementBaseObject managementObject)
         {
-            if (string.IsNullOrWhiteSpace(recordTextRepresentation))
-                throw new ArgumentNullException(nameof(recordTextRepresentation));
+            var wmiClass = (string)managementObject["__CLASS"];
+            var ownerName = (string)managementObject["OwnerName"];
+            var recordClass = (ushort)managementObject["RecordClass"];
+            var recordData = (string)managementObject["RecordData"];
+            var ttl = (uint)managementObject["TTL"];
 
-            int ownerIndex = recordTextRepresentation.IndexOf(' ');
-            int classIndex = recordTextRepresentation.IndexOf(' ', ownerIndex + 1);
-            int typeIndex = recordTextRepresentation.IndexOf(' ', classIndex + 1);
+            var state = new WindowsDnsRecordState(managementObject);
 
-            var ownerName = recordTextRepresentation.Substring(0, ownerIndex);
-            var classString = recordTextRepresentation.Substring(ownerIndex + 1, classIndex - ownerIndex - 1);
-            if (!classMap.TryGetValue(classString, out var recordClass))
-                throw new ArgumentException("Invalid DNS Record Class", nameof(recordTextRepresentation));
-            var typeString = recordTextRepresentation.Substring(classIndex + 1, typeIndex - classIndex - 1);
-            if (!Enum.TryParse<DnsRecordTypes>(typeString, out var type))
-                throw new ArgumentException("Invalid DNS Record Type", nameof(recordTextRepresentation));
-
-            var ttl = TimeSpan.FromSeconds((int)timeToLive);
-
-            return ParseRecord(zone, type, ownerName, recordClass, ttl, recordTextRepresentation.Substring(typeIndex + 1));
+            return ParseRecordInternal(zone, state, wmiClass, ownerName, recordClass, ttl, recordData);
         }
 
-        public static DnsRecord ParseRecord(WindowsDnsZone zone, string wmiClass, string ownerName, ushort recordClass, uint timeToLive, string data)
+        public static DnsRecord ParseRecordInternal(this WindowsDnsZone zone, WindowsDnsRecordState state, string wmiClass, string ownerName, ushort recordClass, uint timeToLive, string data)
         {
             if (!wmiClassMap.TryGetValue(wmiClass, out var type))
                 throw new ArgumentOutOfRangeException(nameof(wmiClass));
             var ttl = TimeSpan.FromSeconds(timeToLive);
 
-            return ParseRecord(zone, type, ownerName, (DnsRecordClasses)recordClass, ttl, data);
+            return ParseRecordInternal(zone, state, type, ownerName, (DnsRecordClasses)recordClass, ttl, data);
         }
 
-        public static DnsRecord ParseRecord(WindowsDnsZone zone, DnsRecordTypes type, string ownerName, DnsRecordClasses recordClass, TimeSpan timeToLive, string data)
+        public static DnsRecord ParseRecordInternal(this WindowsDnsZone zone, WindowsDnsRecordState state, DnsRecordTypes type, string ownerName, DnsRecordClasses recordClass, TimeSpan timeToLive, string data)
         {
             if (!recordParserMap.TryGetValue(type, out var recordParser))
                 throw new NotSupportedException($"The record type ({type}) is not supported");
 
-            return recordParser(zone, ownerName, recordClass, timeToLive, data);
+            return recordParser(zone, state, ownerName, recordClass, timeToLive, data);
         }
 
-        private static DnsARecord ParseARecord(WindowsDnsZone zone, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
-            => new DnsARecord(zone, ownerName, timeToLive, DnsIpAddress.FromString(data));
+        private static DnsARecord ParseARecord(WindowsDnsZone zone, WindowsDnsRecordState state, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
+            => new DnsARecord(zone, state, ownerName, timeToLive, DnsIpAddress.FromString(data));
 
-        private static DnsCNAMERecord ParseCNAMERecord(WindowsDnsZone zone, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
-            => new DnsCNAMERecord(zone, ownerName, timeToLive, data);
+        private static DnsCNAMERecord ParseCNAMERecord(WindowsDnsZone zone, WindowsDnsRecordState state, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
+            => new DnsCNAMERecord(zone, state, ownerName, @class, timeToLive, data);
 
-        private static DnsMXRecord ParseMXRecord(WindowsDnsZone zone, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
+        private static DnsMXRecord ParseMXRecord(WindowsDnsZone zone, WindowsDnsRecordState state, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
         {
             var unknownIndex = data.IndexOf(' ');
             var priorityIndex = data.IndexOf(' ', unknownIndex + 1);
             var priority = ushort.Parse(data.Substring(unknownIndex + 1, priorityIndex - unknownIndex - 1));
 
-            return new DnsMXRecord(zone, ownerName, timeToLive, priority, data.Substring(priorityIndex + 1));
+            return new DnsMXRecord(zone, state, ownerName, @class, timeToLive, priority, data.Substring(priorityIndex + 1));
         }
 
-        private static DnsNSRecord ParseNSRecord(WindowsDnsZone zone, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
-            => new DnsNSRecord(zone, ownerName, @class, timeToLive, data);
+        private static DnsNSRecord ParseNSRecord(WindowsDnsZone zone, WindowsDnsRecordState state, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
+            => new DnsNSRecord(zone, state, ownerName, @class, timeToLive, data);
 
-        private static DnsPTRRecord ParsePTRRecord(WindowsDnsZone zone, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
-            => new DnsPTRRecord(zone, ownerName, @class, timeToLive, data);
+        private static DnsPTRRecord ParsePTRRecord(WindowsDnsZone zone, WindowsDnsRecordState state, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
+            => new DnsPTRRecord(zone, state, ownerName, @class, timeToLive, data);
 
-        private static DnsSOARecord ParseSOARecord(WindowsDnsZone zone, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
+        private static DnsSOARecord ParseSOARecord(WindowsDnsZone zone, WindowsDnsRecordState state, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
         {
             var arguments = data.Split(recordDataSeperators, StringSplitOptions.None);
 
@@ -133,10 +130,10 @@ namespace Dns.WindowsDnsServer
             var expireLimit = TimeSpan.FromSeconds(int.Parse(arguments[6]));
             var minimumTtl = TimeSpan.FromSeconds(int.Parse(arguments[7]));
 
-            return new DnsSOARecord(zone, ownerName, @class, timeToLive, primaryServer, responsiblePerson, serial, refreshInterval, retryDelay, expireLimit, minimumTtl);
+            return new DnsSOARecord(zone, state, ownerName, @class, timeToLive, primaryServer, responsiblePerson, serial, refreshInterval, retryDelay, expireLimit, minimumTtl);
         }
 
-        public static DnsSRVRecord ParseSRVRecord(WindowsDnsZone zone, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
+        private static DnsSRVRecord ParseSRVRecord(WindowsDnsZone zone, WindowsDnsRecordState state, string ownerName, DnsRecordClasses @class, TimeSpan timeToLive, string data)
         {
             var arguments = data.Split(recordDataSeperators, StringSplitOptions.None);
 
@@ -148,7 +145,60 @@ namespace Dns.WindowsDnsServer
             var port = ushort.Parse(arguments[2]);
             var target = arguments[3];
 
-            return new DnsSRVRecord(zone, ownerName, timeToLive, priority, weight, port, target);
+            return new DnsSRVRecord(zone, state, ownerName, timeToLive, priority, weight, port, target);
+        }
+
+
+        public static DnsRecord CreateRecordInternal(this WindowsDnsZone zone, DnsRecord templateRecord)
+        {
+            if (zone == null)
+                throw new ArgumentNullException(nameof(zone));
+            if (templateRecord == null)
+                throw new ArgumentNullException(nameof(templateRecord));
+
+            if (!wmiClassMapReverse.TryGetValue(templateRecord.Type, out var wmiClassName))
+                throw new NotSupportedException("This record type is not supported");
+
+            using (var wmiClass = zone.server.WmiGetClass(wmiClassName))
+            {
+                using (var wmiParams = wmiClass.GetMethodParameters("CreateInstanceFromPropertyData"))
+                {
+                    wmiParams["ContainerName"] = zone.DomainName;
+                    wmiParams["DnsServerName"] = zone.server.Name;
+                    wmiParams["TTL"] = (uint)templateRecord.TimeToLive.TotalSeconds;
+                    wmiParams["OwnerName"] = templateRecord.Name;
+                    wmiParams["RecordClass"] = (uint)templateRecord.Class;
+
+                    // populate record-specific parameters
+                    switch (templateRecord)
+                    {
+                        case DnsARecord aRecord:
+                            CreateARecordParamters(zone, aRecord, wmiParams);
+                            break;
+                        case DnsCNAMERecord cNAMERecord:
+                            CreateCNameRecordParamters(zone, cNAMERecord, wmiParams);
+                            break;
+                        default:
+                            throw new NotSupportedException("This record type is not supported");
+                    }
+
+                    var wmiResult = wmiClass.InvokeMethod("CreateInstanceFromPropertyData", wmiParams, null);
+                    var wmiPath = (string)wmiResult["RR"];
+                    var state = new WindowsDnsRecordState(wmiPath);
+
+                    return templateRecord.Clone(zone, state);
+                }
+            }
+        }
+
+        private static void CreateARecordParamters(WindowsDnsZone zone, DnsARecord templateRecord, ManagementBaseObject wmiParams)
+        {
+            wmiParams["IPAddress"] = templateRecord.IpAddress.ToString();
+        }
+
+        private static void CreateCNameRecordParamters(WindowsDnsZone zone, DnsCNAMERecord templateRecord, ManagementBaseObject wmiParams)
+        {
+            wmiParams["PrimaryName"] = templateRecord.PrimaryName;
         }
 
     }

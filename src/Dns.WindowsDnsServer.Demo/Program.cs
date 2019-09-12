@@ -11,7 +11,7 @@ namespace Dns.WindowsDnsServer.Demo
         {
 
             // connect to DNS server
-            Console.Write($"Connecting to {Environment.GetEnvironmentVariable("DnsServerAddress")}...");
+            Write($"Connecting to {Environment.GetEnvironmentVariable("DnsServerAddress")}...");
             using (var server = WindowsDnsServer.Connect(
                 Environment.GetEnvironmentVariable("DnsServerAddress"),
                 Environment.GetEnvironmentVariable("DnsServerAuthority"),

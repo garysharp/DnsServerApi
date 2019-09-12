@@ -44,15 +44,16 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsSRVRecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="priority">Priority of the this target host</param>
         /// <param name="weight">Server selection mechanism</param>
         /// <param name="port">Port on this target host of this service. See <see cref="ServicePorts"/>.</param>
         /// <param name="targetDomainName">Domain name of the target host</param>
-        public DnsSRVRecord(DnsZone zone, string name, TimeSpan timeToLive,
+        public DnsSRVRecord(DnsZone zone, object providerState, string name, TimeSpan timeToLive,
             ushort priority, ushort weight, ushort port, string targetDomainName)
-            : base(zone, name, DnsRecordTypes.SRV, DnsRecordClasses.IN, timeToLive)
+            : base(zone, providerState, name, DnsRecordTypes.SRV, DnsRecordClasses.IN, timeToLive)
         {
             var protocolStartIndex = name.IndexOf('.');
             if (protocolStartIndex < 1 || name.IndexOf('.', protocolStartIndex + 1) < 0)
@@ -65,6 +66,22 @@ namespace Dns
             Weight = weight;
             Port = port;
             TargetDomainName = targetDomainName;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsSRVRecord"/>.
+        /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="priority">Priority of the this target host</param>
+        /// <param name="weight">Server selection mechanism</param>
+        /// <param name="port">Port on this target host of this service. See <see cref="ServicePorts"/>.</param>
+        /// <param name="targetDomainName">Domain name of the target host</param>
+        public DnsSRVRecord(DnsZone zone, string name, TimeSpan timeToLive,
+            ushort priority, ushort weight, ushort port, string targetDomainName)
+            : this(zone, providerState: null, name, timeToLive, priority, weight, port, targetDomainName)
+        {
         }
 
         /// <summary>
@@ -120,9 +137,10 @@ namespace Dns
         /// Clones the record associating it with the provided zone
         /// </summary>
         /// <param name="zone">Record associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone)
-            => new DnsSRVRecord(zone, Name, TimeToLive, Priority, Weight, Port, TargetDomainName);
+        public override DnsRecord Clone(DnsZone zone, object providerState)
+            => new DnsSRVRecord(zone, providerState, Name, TimeToLive, Priority, Weight, Port, TargetDomainName);
 
         /// <summary>
         /// Returns a textual representation of the current instance data

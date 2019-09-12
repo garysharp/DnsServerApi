@@ -12,6 +12,10 @@ namespace Dns
         /// </summary>
         public DnsZone Zone { get; }
         /// <summary>
+        /// Provider-specific state storage
+        /// </summary>
+        public object ProviderState { get; }
+        /// <summary>
         /// Owner name
         /// </summary>
         public string Name { get; }
@@ -32,11 +36,12 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsRecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <param name="name">Owner name</param>
         /// <param name="type">Record type</param>
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
-        public DnsRecord(DnsZone zone, string name, DnsRecordTypes type, DnsRecordClasses @class, TimeSpan timeToLive)
+        public DnsRecord(DnsZone zone, object providerState, string name, DnsRecordTypes type, DnsRecordClasses @class, TimeSpan timeToLive)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
@@ -44,10 +49,24 @@ namespace Dns
                 throw new ArgumentOutOfRangeException(nameof(timeToLive));
 
             Zone = zone;
+            ProviderState = providerState;
             Name = name;
             Type = type;
             Class = @class;
             TimeToLive = timeToLive;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsRecord"/>.
+        /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="type">Record type</param>
+        /// <param name="class">Record class</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        public DnsRecord(DnsZone zone, string name, DnsRecordTypes type, DnsRecordClasses @class, TimeSpan timeToLive)
+            : this (zone, providerState: null, name, type, @class, timeToLive)
+        {
         }
 
         /// <summary>
@@ -88,8 +107,9 @@ namespace Dns
         /// Clones the record associating it with the provided zone
         /// </summary>
         /// <param name="zone">Record associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public abstract DnsRecord Clone(DnsZone zone);
+        public abstract DnsRecord Clone(DnsZone zone, object providerState);
 
         /// <summary>
         /// Returns a textual representation of the current instance data

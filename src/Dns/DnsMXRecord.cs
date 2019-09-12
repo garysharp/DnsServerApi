@@ -21,19 +21,34 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsMXRecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <param name="name">Owner name</param>
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="preference">Preference given to this record</param>
         /// <param name="domainName">Mail Exchange Domain Name</param>
-        public DnsMXRecord(DnsZone zone, string name, DnsRecordClasses @class, TimeSpan timeToLive, ushort preference, string domainName)
-            : base(zone, name, DnsRecordTypes.MX, @class, timeToLive)
+        public DnsMXRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, ushort preference, string domainName)
+            : base(zone, providerState, name, DnsRecordTypes.MX, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(domainName))
                 throw new ArgumentNullException(domainName);
 
             Preference = preference;
             DomainName = domainName;
+        }
+
+        /// <summary>
+        /// Constructs a new instance of <see cref="DnsMXRecord"/>.
+        /// </summary>
+        /// <param name="zone">Associated zone</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="class">Record class</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="preference">Preference given to this record</param>
+        /// <param name="domainName">Mail Exchange Domain Name</param>
+        public DnsMXRecord(DnsZone zone, string name, DnsRecordClasses @class, TimeSpan timeToLive, ushort preference, string domainName)
+            : this(zone, providerState: null, name, @class, timeToLive, preference, domainName)
+        {
         }
 
         /// <summary>
@@ -78,9 +93,10 @@ namespace Dns
         /// Clones the record associating it with the provided zone
         /// </summary>
         /// <param name="zone">Record associated zone</param>
+        /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone)
-            => new DnsMXRecord(zone, Name, Class, TimeToLive, Preference, DomainName);
+        public override DnsRecord Clone(DnsZone zone, object providerState)
+            => new DnsMXRecord(zone, providerState, Name, Class, TimeToLive, Preference, DomainName);
 
         /// <summary>
         /// Returns a textual representation of the current instance data
