@@ -27,7 +27,7 @@ namespace Dns
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="preference">Preference given to this record</param>
         /// <param name="domainName">Mail Exchange Domain Name</param>
-        public DnsMXRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, ushort preference, string domainName)
+        private DnsMXRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, ushort preference, string domainName)
             : base(zone, providerState, name, DnsRecordTypes.MX, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(domainName))
@@ -95,7 +95,7 @@ namespace Dns
         /// <param name="zone">Record associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone, object providerState)
+        internal override DnsRecord Clone(DnsZone zone, object providerState)
             => new DnsMXRecord(zone, providerState, Name, Class, TimeToLive, Preference, DomainName);
 
         /// <summary>

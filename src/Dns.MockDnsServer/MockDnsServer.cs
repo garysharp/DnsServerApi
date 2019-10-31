@@ -25,7 +25,14 @@ namespace Dns.MockDnsServer
             if (zoneTemplate == null)
                 throw new ArgumentNullException(nameof(zoneTemplate));
 
-            return CreateZone(zoneTemplate.DomainName);
+            if (zones.Exists(z => string.Equals(zoneTemplate.DomainName, z.DomainName, StringComparison.OrdinalIgnoreCase)))
+                throw new ArgumentException("A zone with that name already exists", nameof(zoneTemplate.DomainName));
+
+            var zone = new MockDnsZone(this, zoneTemplate.DomainName, zoneTemplate.Type, zoneTemplate.IsReverseZone);
+
+            zones.Add(zone);
+
+            return zone;
         }
 
         /// <inheritdoc/> 
@@ -34,14 +41,9 @@ namespace Dns.MockDnsServer
             if (string.IsNullOrWhiteSpace(domainName))
                 throw new ArgumentNullException(nameof(domainName));
 
-            if (zones.Exists(z => string.Equals(domainName, z.DomainName, StringComparison.OrdinalIgnoreCase)))
-                throw new ArgumentException("A zone with that name already exists", nameof(domainName));
+            var zoneTemplate = new MockDnsZone(this, domainName, DnsZoneType.Primary, false);
 
-            var zone = new MockDnsZone(this, domainName);
-
-            zones.Add(zone);
-
-            return zone;
+            return CreateZone(zoneTemplate);
         }
 
         /// <inheritdoc/>

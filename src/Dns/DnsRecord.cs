@@ -14,7 +14,7 @@ namespace Dns
         /// <summary>
         /// Provider-specific state storage
         /// </summary>
-        public object ProviderState { get; }
+        internal object ProviderState { get; set; }
         /// <summary>
         /// Owner name
         /// </summary>
@@ -41,7 +41,7 @@ namespace Dns
         /// <param name="type">Record type</param>
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
-        public DnsRecord(DnsZone zone, object providerState, string name, DnsRecordTypes type, DnsRecordClasses @class, TimeSpan timeToLive)
+        internal DnsRecord(DnsZone zone, object providerState, string name, DnsRecordTypes type, DnsRecordClasses @class, TimeSpan timeToLive)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
@@ -65,7 +65,7 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         public DnsRecord(DnsZone zone, string name, DnsRecordTypes type, DnsRecordClasses @class, TimeSpan timeToLive)
-            : this (zone, providerState: null, name, type, @class, timeToLive)
+            : this(zone, providerState: null, name, type, @class, timeToLive)
         {
         }
 
@@ -77,7 +77,7 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         public DnsRecord(string name, DnsRecordTypes type, DnsRecordClasses @class, TimeSpan timeToLive)
-            : this (zone: null, name, type, @class, timeToLive)
+            : this(zone: null, providerState: null, name, type, @class, timeToLive)
         {
         }
 
@@ -109,7 +109,7 @@ namespace Dns
         /// <param name="zone">Record associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public abstract DnsRecord Clone(DnsZone zone, object providerState);
+        internal abstract DnsRecord Clone(DnsZone zone, object providerState);
 
         /// <summary>
         /// Returns a textual representation of the current instance data

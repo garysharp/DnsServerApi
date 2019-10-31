@@ -51,7 +51,7 @@ namespace Dns
         /// <param name="weight">Server selection mechanism</param>
         /// <param name="port">Port on this target host of this service. See <see cref="ServicePorts"/>.</param>
         /// <param name="targetDomainName">Domain name of the target host</param>
-        public DnsSRVRecord(DnsZone zone, object providerState, string name, TimeSpan timeToLive,
+        private DnsSRVRecord(DnsZone zone, object providerState, string name, TimeSpan timeToLive,
             ushort priority, ushort weight, ushort port, string targetDomainName)
             : base(zone, providerState, name, DnsRecordTypes.SRV, DnsRecordClasses.IN, timeToLive)
         {
@@ -139,7 +139,7 @@ namespace Dns
         /// <param name="zone">Record associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone, object providerState)
+        internal override DnsRecord Clone(DnsZone zone, object providerState)
             => new DnsSRVRecord(zone, providerState, Name, TimeToLive, Priority, Weight, Port, TargetDomainName);
 
         /// <summary>

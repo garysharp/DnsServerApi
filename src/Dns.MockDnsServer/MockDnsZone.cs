@@ -15,8 +15,8 @@ namespace Dns.MockDnsServer
         public override IEnumerable<DnsRecord> Records => records;
 
         /// <inheritdoc/>
-        public MockDnsZone(MockDnsServer server, string domainName)
-            : base(server, domainName)
+        public MockDnsZone(MockDnsServer server, string domainName, DnsZoneType type, bool isReverseZone)
+            : base(server, domainName, type, isReverseZone)
         {
             if (server == null)
                 throw new ArgumentNullException(nameof(server));
@@ -54,7 +54,7 @@ namespace Dns.MockDnsServer
             if (recordTemplate.Type == DnsRecordTypes.SOA)
                 throw new ArgumentException("Cannot create SOA records. Edit the existing record instead.");
 
-            var record = recordTemplate.Clone(this);
+            var record = CloneRecord(recordTemplate, providerState: null);
             records.Add(record);
 
             return record;

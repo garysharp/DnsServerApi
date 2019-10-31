@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Dns
 {
@@ -10,7 +7,29 @@ namespace Dns
     /// </summary>
     public static class DnsZoneExtensions
     {
-
+        /// <summary>
+        /// Adds an AAAA record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="ipV6Address">IPv6 address of the Host (A) record</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsAAAARecord CreateAAAARecord(this DnsZone zone, string name, TimeSpan timeToLive, string ipV6Address)
+            => (DnsAAAARecord)zone.CreateRecord(new DnsAAAARecord(zone, name, timeToLive, ipV6Address));
+        
+        /// <summary>
+        /// Adds an AFSDB record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="subtype">Subtype of the host AFS server.</param>
+        /// <param name="hostName">A Fully Qualified Domain Name which specifies a host that has a server for the AFS cell specified in owner name.</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsAFSDBRecord CreateAFSDBRecord(this DnsZone zone, string name, TimeSpan timeToLive, ushort subtype, string hostName)
+            => (DnsAFSDBRecord)zone.CreateRecord(new DnsAFSDBRecord(zone, name, timeToLive, subtype, hostName));
+        
         /// <summary>
         /// Adds an A record to the zone
         /// </summary>
@@ -21,6 +40,7 @@ namespace Dns
         /// <returns>Resulting created record</returns>
         public static DnsARecord CreateARecord(this DnsZone zone, string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
             => (DnsARecord)zone.CreateRecord(new DnsARecord(zone, name, timeToLive, ipAddress));
+        
         /// <summary>
         /// Adds a CNAME record to the zone
         /// </summary>
@@ -31,6 +51,7 @@ namespace Dns
         /// <returns>Resulting created record</returns>
         public static DnsCNAMERecord CreateCNAMERecord(this DnsZone zone, string name, TimeSpan timeToLive, string primaryName)
             => (DnsCNAMERecord)zone.CreateRecord(new DnsCNAMERecord(zone, name, timeToLive, primaryName));
+        
         /// <summary>
         /// Adds a MX record to the zone
         /// </summary>
@@ -42,6 +63,7 @@ namespace Dns
         /// <returns>Resulting created record</returns>
         public static DnsMXRecord CreateMXRecord(this DnsZone zone, string name, TimeSpan timeToLive, ushort preference, string domainName)
             => (DnsMXRecord)zone.CreateRecord(new DnsMXRecord(zone, name, timeToLive, preference, domainName));
+        
         /// <summary>
         /// Adds a NS record to the zone
         /// </summary>
@@ -126,5 +148,15 @@ namespace Dns
             ushort priority, ushort weight, ushort port, string targetDomainName)
             => (DnsSRVRecord)zone.CreateRecord(new DnsSRVRecord(zone, service, protocol, timeToLive, priority, weight, port, targetDomainName));
 
+        /// <summary>
+        /// Adds a X25 record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="address">Pointer address</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="psdnAddress">PSDN Address</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsX25Record CreateX25Record(this DnsZone zone, DnsIpAddress address, TimeSpan timeToLive, string psdnAddress)
+            => (DnsX25Record)zone.CreateRecord(new DnsX25Record(zone, address, timeToLive, psdnAddress));
     }
 }

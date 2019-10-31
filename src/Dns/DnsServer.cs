@@ -94,7 +94,7 @@ namespace Dns
         /// <returns></returns>
         public abstract DnsZone CreateZone(DnsZone zoneTemplate);
         /// <summary>
-        /// Adds a DNS Zone to this server
+        /// Adds a DNS Zone to this server using default values (primary, not reverse)
         /// </summary>
         /// <param name="domainName">Domain Name of the zone to be added</param>
         /// <param name="zone">Created zone</param>
@@ -119,7 +119,7 @@ namespace Dns
             }
         }
         /// <summary>
-        /// Adds a DNS Zone to this server
+        /// Adds a DNS Zone to this server using default values (primary, not reverse)
         /// </summary>
         /// <param name="domainName">Domain Name of the zone to be added</param>
         /// <returns></returns>

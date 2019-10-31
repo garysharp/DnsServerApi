@@ -51,7 +51,7 @@ namespace Dns
         /// <param name="retryDelay">Time interval that should elapse before a failed refresh should be retried</param>
         /// <param name="expireLimit">The upper limit on the time interval that can elapse before the zone is no longer authoritative</param>
         /// <param name="minimumTimeToLive">The minimum time-to-live (TTL) that should be exported with an record from this zone</param>
-        public DnsSOARecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive,
+        private DnsSOARecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive,
             string primaryServer, string responsiblePerson, uint serial, TimeSpan refreshInterval,
             TimeSpan retryDelay, TimeSpan expireLimit, TimeSpan minimumTimeToLive)
             : base(zone, providerState, name, DnsRecordTypes.SOA, @class, timeToLive)
@@ -168,7 +168,7 @@ namespace Dns
         /// <param name="zone">Record associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone, object providerState)
+        internal override DnsRecord Clone(DnsZone zone, object providerState)
             => new DnsSOARecord(zone, providerState, Name, Class, TimeToLive, PrimaryServer, ResponsiblePerson, Serial, RefreshInterval, RetryDelay, ExpireLimit, MinimumTimeToLive);
 
         /// <summary>

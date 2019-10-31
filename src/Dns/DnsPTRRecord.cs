@@ -29,7 +29,7 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="domainName">Pointer Domain Name</param>
-        public DnsPTRRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string domainName)
+        private DnsPTRRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string domainName)
             : base(zone, providerState, name, DnsRecordTypes.PTR, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(domainName))
@@ -146,7 +146,7 @@ namespace Dns
         /// <param name="zone">Record associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone, object providerState)
+        internal override DnsRecord Clone(DnsZone zone, object providerState)
             => new DnsPTRRecord(zone, providerState, Name, Class, TimeToLive, DomainName);
 
         /// <summary>

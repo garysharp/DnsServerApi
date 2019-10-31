@@ -21,7 +21,7 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="primaryName">Primary Name for <see cref="DnsRecord.Name"/></param>
-        public DnsCNAMERecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string primaryName)
+        private DnsCNAMERecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string primaryName)
             : base(zone, providerState, name, DnsRecordTypes.CNAME, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(primaryName))
@@ -84,7 +84,7 @@ namespace Dns
         /// <param name="zone">Record associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone, object providerState)
+        internal override DnsRecord Clone(DnsZone zone, object providerState)
             => new DnsCNAMERecord(zone, providerState, Name, Class, TimeToLive, PrimaryName);
 
         /// <summary>

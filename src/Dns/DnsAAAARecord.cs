@@ -3,49 +3,49 @@
 namespace Dns
 {
     /// <summary>
-    /// Host Record
+    /// IPv6 Host Record
     /// </summary>
-    public class DnsARecord : DnsRecord
+    public class DnsAAAARecord : DnsRecord
     {
         /// <summary>
         /// IP address of the Host (A) record
         /// </summary>
-        public DnsIpAddress IpAddress { get; set; }
+        public string IpV6Address { get; set; }
 
         /// <summary>
-        /// Constructs a new instance of <see cref="DnsARecord"/>.
+        /// Constructs a new instance of <see cref="DnsAAAARecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
-        /// <param name="ipAddress">IP address of the Host (A) record</param>
-        private DnsARecord(DnsZone zone, object providerState, string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
-            : base(zone, providerState, name, DnsRecordTypes.A, DnsRecordClasses.IN, timeToLive)
+        /// <param name="ipV6Address">IPv6 address of the Host (A) record</param>
+        private DnsAAAARecord(DnsZone zone, object providerState, string name, TimeSpan timeToLive, string ipV6Address)
+            : base(zone, providerState, name, DnsRecordTypes.AAAA, DnsRecordClasses.IN, timeToLive)
         {
-            IpAddress = ipAddress;
+            IpV6Address = ipV6Address;
         }
 
         /// <summary>
-        /// Constructs a new instance of <see cref="DnsARecord"/>.
+        /// Constructs a new instance of <see cref="DnsAAAARecord"/>.
         /// </summary>
         /// <param name="zone">Associated zone</param>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
-        /// <param name="ipAddress">IP address of the Host (A) record</param>
-        public DnsARecord(DnsZone zone, string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
-            : this(zone, providerState: null, name, timeToLive, ipAddress)
+        /// <param name="ipV6Address">IPv6 address of the Host (A) record</param>
+        public DnsAAAARecord(DnsZone zone, string name, TimeSpan timeToLive, string ipV6Address)
+            : this(zone, providerState: null, name, timeToLive, ipV6Address)
         {
         }
 
         /// <summary>
-        /// Constructs a new instance of <see cref="DnsARecord"/>.
+        /// Constructs a new instance of <see cref="DnsAAAARecord"/>.
         /// </summary>
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
-        /// <param name="ipAddress">IP address of the Host (A) record</param>
-        public DnsARecord(string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
-            : this(zone: null, name, timeToLive, ipAddress)
+        /// <param name="ipV6Address">IPv6 address of the Host (A) record</param>
+        public DnsAAAARecord(string name, TimeSpan timeToLive, string ipV6Address)
+            : this(zone: null, name, timeToLive, ipV6Address)
         {
         }
 
@@ -56,14 +56,14 @@ namespace Dns
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
         internal override DnsRecord Clone(DnsZone zone, object providerState)
-            => new DnsARecord(zone, providerState, Name, TimeToLive, IpAddress);
+            => new DnsAAAARecord(zone, providerState, Name, TimeToLive, IpV6Address);
 
         /// <summary>
         /// Returns a textual representation of the current instance data
         /// </summary>
         /// <returns>A textual representation of the current instance data</returns>
         protected override string GetDataText()
-            => IpAddress.ToString();
+            => IpV6Address;
 
     }
 }

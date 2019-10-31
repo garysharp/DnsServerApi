@@ -15,6 +15,7 @@ namespace Dns.WindowsDnsServer
         internal ManagementScope Scope { get; }
 
         public override IEnumerable<DnsZone> Zones => GetZones();
+        public IEnumerable<WindowsDnsZone> WindowsZones => GetZones();
 
         private WindowsDnsServer(string domainName, ConnectionOptions connectionOptions)
             : base(domainName)
@@ -67,7 +68,7 @@ namespace Dns.WindowsDnsServer
             return new WindowsDnsServer(domainName, options);
         }
 
-        private IEnumerable<DnsZone> GetZones()
+        private IEnumerable<WindowsDnsZone> GetZones()
         {
             foreach (var result in this.WmiGetInstances("MicrosoftDNS_Zone"))
             {
@@ -87,12 +88,21 @@ namespace Dns.WindowsDnsServer
 
         public override void DeleteZone(DnsZone zone)
         {
-            throw new NotImplementedException();
+            var windowsZone = zone as WindowsDnsZone;
+
+            if (zone == null)
+                throw new ArgumentException("Zone must be created by the provider");
+
+            this.DeleteZoneInternal(windowsZone);
         }
 
         public override void DeleteZone(string domainName)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(domainName))
+                throw new ArgumentNullException(nameof(domainName));
+
+            var zone = this.GetZoneInternal(domainName);
+            this.DeleteZoneInternal(zone);
         }
 
         public override DnsZone GetZone(string domainName)
@@ -100,15 +110,7 @@ namespace Dns.WindowsDnsServer
             if (string.IsNullOrWhiteSpace(domainName))
                 throw new ArgumentNullException(nameof(domainName));
 
-            try
-            {
-                var result = this.WmiGetInstance("MicrosoftDNS_Zone", $"ContainerName=\"{domainName}\",DnsServerName=\"{Name}\",Name=\"{domainName}\"");
-                return new WindowsDnsZone(this, result);
-            }
-            catch (ManagementException me) when (string.Equals(me.Message, "Generic failure ", StringComparison.Ordinal))
-            {
-                throw new ArgumentException("Zone not found", nameof(domainName));
-            }
+            return this.GetZoneInternal(domainName);
         }
 
     }

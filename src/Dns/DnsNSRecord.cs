@@ -21,7 +21,7 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nameServer">A host which should be authoritative for the domain</param>
-        public DnsNSRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string nameServer)
+        private DnsNSRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string nameServer)
             : base(zone, providerState, name, DnsRecordTypes.NS, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(nameServer))
@@ -84,7 +84,7 @@ namespace Dns
         /// <param name="zone">Record associated zone</param>
         /// <param name="providerState">Provider-specific state storage</param>
         /// <returns>A record clone</returns>
-        public override DnsRecord Clone(DnsZone zone, object providerState)
+        internal override DnsRecord Clone(DnsZone zone, object providerState)
             => new DnsNSRecord(zone, providerState, Name, Class, TimeToLive, NameServer);
 
         /// <summary>
