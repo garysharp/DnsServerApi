@@ -102,10 +102,10 @@ namespace Dns
         {
             // rotate octets
             var flippedAddress =
-                ((address << 24) & 0xFF_00_00_00) |
-                ((address << 16) & 0x00_FF_00_00) |
-                ((address >> 16) & 0x00_00_FF_00) |
-                ((address >> 24) & 0x00_00_00_FF);
+                ((address & 0x000000FF) << 24 ) |
+                ((address & 0x0000FF00) << 8 ) |
+                ((address & 0x00FF0000) >> 8 ) |
+                ((address & 0xFF000000) >> 24);
 
             return new DnsIpAddress(flippedAddress);
         }
@@ -141,7 +141,7 @@ namespace Dns
         {
             var index = 0;
             for (int i = 0; i < 4; i++)
-                index = ptrAddress.IndexOf('.', index);
+                index = ptrAddress.IndexOf('.', index + 1);
 
             var address = new DnsIpAddress(ptrAddress, 0, index);
             return address.GetFlipped();

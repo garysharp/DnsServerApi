@@ -36,7 +36,9 @@ namespace Dns
             get
             {
                 var protocolStartIndex = Name.IndexOf('.') + 1;
-                return Name.Substring(protocolStartIndex, Name.IndexOf('.', protocolStartIndex));
+                var protocolEndIndex =  Name.IndexOf('.', Name.IndexOf(".") +1 );
+                var length = protocolEndIndex - protocolStartIndex;
+                return Name.Substring(protocolStartIndex, length);
             }
         }
 
