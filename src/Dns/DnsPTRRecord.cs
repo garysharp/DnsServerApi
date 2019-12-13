@@ -60,7 +60,7 @@ namespace Dns
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="domainName">Pointer Domain Name</param>
         public DnsPTRRecord(DnsZone zone, DnsIpAddress address, DnsRecordClasses @class, TimeSpan timeToLive, string domainName)
-            : base(zone, $"{address.GetFlipped()}.{zone.DomainName}", DnsRecordTypes.PTR, @class, timeToLive)
+            : base(zone, $"{address.GetFlipped()}.in-addr.arpa", DnsRecordTypes.PTR, @class, timeToLive)
         {
             if (string.IsNullOrWhiteSpace(domainName))
                 throw new ArgumentNullException(nameof(domainName));
@@ -84,12 +84,11 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsPTRRecord"/>.
         /// </summary>
         /// <param name="address">Pointer address</param>
-        /// <param name="zoneDomainName">Zone domain name</param>
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="domainName">Pointer Domain Name</param>
-        public DnsPTRRecord(DnsIpAddress address, string zoneDomainName, DnsRecordClasses @class, TimeSpan timeToLive, string domainName)
-            : this(zone: null, $"{address.GetFlipped()}.{zoneDomainName}", @class, timeToLive, domainName)
+        public DnsPTRRecord(DnsIpAddress address, DnsRecordClasses @class, TimeSpan timeToLive, string domainName)
+            : this(zone: null, $"{address.GetFlipped()}.in-addr.arpa", @class, timeToLive, domainName)
         {
         }
 
@@ -132,11 +131,10 @@ namespace Dns
         /// Constructs a new instance of <see cref="DnsPTRRecord"/>.
         /// </summary>
         /// <param name="address">Pointer address</param>
-        /// <param name="zoneDomainName">Zone domain name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="domainName">Pointer Domain Name</param>
-        public DnsPTRRecord(DnsIpAddress address, string zoneDomainName, TimeSpan timeToLive, string domainName)
-            : this(zone: null, $"{address.GetFlipped()}.{zoneDomainName}", timeToLive, domainName)
+        public DnsPTRRecord(DnsIpAddress address, TimeSpan timeToLive, string domainName)
+            : this(zone: null, $"{address.GetFlipped()}.in-addr.arpa", timeToLive, domainName)
         {
         }
 
