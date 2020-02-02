@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <Authors>Gary Sharp</Authors>
     <Product>DNS Server API - Mock DNS Server Demo</Product>
-    <Copyright>Copyright 2019 Gary Sharp</Copyright>
+    <Copyright>Copyright 2020 Gary Sharp</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/garysharp/DnsServerApi</PackageProjectUrl>
     <RepositoryUrl>https://github.com/garysharp/DnsServerApi</RepositoryUrl>

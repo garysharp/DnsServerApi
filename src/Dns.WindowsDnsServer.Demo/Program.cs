@@ -32,7 +32,7 @@ namespace Dns.WindowsDnsServer.Demo
             WriteLine(server);
 
             WriteLine("Zones:");
-            foreach (var zone in server.Zones.Cast<WindowsDnsZone>())
+            foreach (var zone in server.GetZones().Cast<WindowsDnsZone>())
             {
                 DumpDnsZone(zone);
                 WriteLine("----");
@@ -43,7 +43,7 @@ namespace Dns.WindowsDnsServer.Demo
         {
             WriteLine(zone);
             WriteLine($"          Data File: {zone.DataFile}");
-            WriteLine($"      AD Integrated: {zone.ActiveDirectoryIntegrated}");
+            WriteLine($"      AD Integrated: {zone.DsIntegrated}");
 
             if (zone.Type != DnsZoneType.Forwarder)
             {
@@ -66,7 +66,7 @@ namespace Dns.WindowsDnsServer.Demo
             }
 
             WriteLine("Records:");
-            foreach (var record in zone.Records.Where(r => r.Type != DnsRecordTypes.SOA && r.Type != DnsRecordTypes.NS))
+            foreach (var record in zone.GetRecords().Where(r => r.Type != DnsRecordTypes.SOA && r.Type != DnsRecordTypes.NS))
             {
                 WriteLine(record);
             }

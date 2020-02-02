@@ -8,7 +8,7 @@ namespace Dns
     public static class DnsZoneExtensions
     {
         /// <summary>
-        /// Adds an AAAA record to the zone
+        /// Adds an IPv6 Host Address (AAAA) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -17,9 +17,9 @@ namespace Dns
         /// <returns>Resulting created record</returns>
         public static DnsAAAARecord CreateAAAARecord(this DnsZone zone, string name, TimeSpan timeToLive, string ipV6Address)
             => (DnsAAAARecord)zone.CreateRecord(new DnsAAAARecord(zone, name, timeToLive, ipV6Address));
-        
+
         /// <summary>
-        /// Adds an AFSDB record to the zone
+        /// Adds an Andrew File System Database (AFSDB) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -29,9 +29,9 @@ namespace Dns
         /// <returns>Resulting created record</returns>
         public static DnsAFSDBRecord CreateAFSDBRecord(this DnsZone zone, string name, TimeSpan timeToLive, ushort subtype, string hostName)
             => (DnsAFSDBRecord)zone.CreateRecord(new DnsAFSDBRecord(zone, name, timeToLive, subtype, hostName));
-        
+
         /// <summary>
-        /// Adds an A record to the zone
+        /// Adds an IPv4 Host Address (A) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -40,9 +40,21 @@ namespace Dns
         /// <returns>Resulting created record</returns>
         public static DnsARecord CreateARecord(this DnsZone zone, string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
             => (DnsARecord)zone.CreateRecord(new DnsARecord(zone, name, timeToLive, ipAddress));
-        
+
         /// <summary>
-        /// Adds a CNAME record to the zone
+        /// Adds an ATM Address (ATMA) record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="format">The ATM address format.</param>
+        /// <param name="aTMAddress">The ATM address of the node/owner to which this RR pertains.</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsATMARecord CreateATMARecord(this DnsZone zone, string name, TimeSpan timeToLive, ushort format, string aTMAddress)
+            => (DnsATMARecord)zone.CreateRecord(new DnsATMARecord(zone, name, timeToLive, format, aTMAddress));
+
+        /// <summary>
+        /// Adds an Alias/Canonical Name (CNAME) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -51,9 +63,33 @@ namespace Dns
         /// <returns>Resulting created record</returns>
         public static DnsCNAMERecord CreateCNAMERecord(this DnsZone zone, string name, TimeSpan timeToLive, string primaryName)
             => (DnsCNAMERecord)zone.CreateRecord(new DnsCNAMERecord(zone, name, timeToLive, primaryName));
-        
+
         /// <summary>
-        /// Adds a MX record to the zone
+        /// Adds a Host Information (HINFO) record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="cpu">The CPU type of the owner of the record.</param>
+        /// <param name="os">The operating system type of the owner.</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsHINFORecord CreateHINFORecord(this DnsZone zone, string name, TimeSpan timeToLive, string cpu, string os)
+            => (DnsHINFORecord)zone.CreateRecord(new DnsHINFORecord(zone, name, timeToLive, cpu, os));
+
+        /// <summary>
+        /// Adds an Integrated Services Digital Network (ISDN) record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="isdnNumber">The ISDN number and DDI of the record's owner.</param>
+        /// <param name="subAddress">The subaddress of the owner, if defined.</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsISDNRecord CreateISDNRecord(this DnsZone zone, string name, TimeSpan timeToLive, string isdnNumber, string subAddress)
+            => (DnsISDNRecord)zone.CreateRecord(new DnsHINFORecord(zone, name, timeToLive, isdnNumber, subAddress));
+
+        /// <summary>
+        /// Adds a Mail Exchange (MX) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -65,7 +101,7 @@ namespace Dns
             => (DnsMXRecord)zone.CreateRecord(new DnsMXRecord(zone, name, timeToLive, preference, domainName));
         
         /// <summary>
-        /// Adds a NS record to the zone
+        /// Adds a Name Server (NS) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -76,7 +112,7 @@ namespace Dns
             => (DnsNSRecord)zone.CreateRecord(new DnsNSRecord(zone, name, timeToLive, nameServer));
 
         /// <summary>
-        /// Adds a PTR record to the zone
+        /// Adds a Pointer (PTR) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -87,7 +123,7 @@ namespace Dns
             => (DnsPTRRecord)zone.CreateRecord(new DnsPTRRecord(zone, name, timeToLive, domainName));
 
         /// <summary>
-        /// Adds a PTR record to the zone
+        /// Adds a Pointer (PTR) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="address">Pointer address</param>
@@ -98,7 +134,31 @@ namespace Dns
             => (DnsPTRRecord)zone.CreateRecord(new DnsPTRRecord(zone, address, timeToLive, domainName));
 
         /// <summary>
-        /// Adds a SOA record to the zone
+        /// Adds a Responsible Person (RP) record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="rpMailbox">A Fully Qualified Domain Name that specifies the mailbox for the responsible person.</param>
+        /// <param name="txtDomainName">A Fully Qualified Domain Name for which TXT RR's exist.</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsRPRecord CreateRPRecord(this DnsZone zone, string name, TimeSpan timeToLive, string rpMailbox, string txtDomainName)
+            => (DnsRPRecord)zone.CreateRecord(new DnsRPRecord(zone, name, timeToLive, rpMailbox, txtDomainName));
+
+        /// <summary>
+        /// Adds a Route Through (RT) record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="name">Owner name</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="preference">The preference given to this RR among others at the same owner.  Lower values are preferred.</param>
+        /// <param name="intermediateHost">A Fully Qualified Domain Name which specifies a host which will serve as an intermediate in reaching the host specified by owner.</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsRTRecord CreateRPRecord(this DnsZone zone, string name, TimeSpan timeToLive, ushort preference, string intermediateHost)
+            => (DnsRTRecord)zone.CreateRecord(new DnsRTRecord(zone, name, timeToLive, preference, intermediateHost));
+
+        /// <summary>
+        /// Adds a Start of Zone of Authority (SOA) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -118,7 +178,7 @@ namespace Dns
                 responsiblePerson, serial, refreshInterval, retryDelay, expireLimit, minimumTimeToLive));
 
         /// <summary>
-        /// Adds a SRV record to the zone
+        /// Adds a Service Location (SRV) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="name">Owner name</param>
@@ -133,7 +193,7 @@ namespace Dns
             => (DnsSRVRecord)zone.CreateRecord(new DnsSRVRecord(zone, name, timeToLive, priority, weight, port, targetDomainName));
 
         /// <summary>
-        /// Adds a SRV record to the zone
+        /// Adds a Service Location (SRV) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="service">Symbolic name of the desired service. See <see cref="DnsSRVRecord.ServiceNames"/>.</param>
@@ -149,7 +209,18 @@ namespace Dns
             => (DnsSRVRecord)zone.CreateRecord(new DnsSRVRecord(zone, service, protocol, timeToLive, priority, weight, port, targetDomainName));
 
         /// <summary>
-        /// Adds a X25 record to the zone
+        /// Adds a Text (TXT) record to the zone
+        /// </summary>
+        /// <param name="zone">Zone to which the record should be added</param>
+        /// <param name="address">Pointer address</param>
+        /// <param name="timeToLive">Record time to live (TTL)</param>
+        /// <param name="descriptiveText">Descriptive text whose semantics depend on the owner domain.</param>
+        /// <returns>Resulting created record</returns>
+        public static DnsTXTRecord CreateTXTRecord(this DnsZone zone, DnsIpAddress address, TimeSpan timeToLive, string descriptiveText)
+            => (DnsTXTRecord)zone.CreateRecord(new DnsTXTRecord(zone, address, timeToLive, descriptiveText));
+
+        /// <summary>
+        /// Adds a X.25 (X25) record to the zone
         /// </summary>
         /// <param name="zone">Zone to which the record should be added</param>
         /// <param name="address">Pointer address</param>

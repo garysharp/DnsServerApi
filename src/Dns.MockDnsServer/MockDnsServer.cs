@@ -11,13 +11,13 @@ namespace Dns.MockDnsServer
         private readonly List<MockDnsZone> zones = new List<MockDnsZone>();
 
         /// <inheritdoc/>
-        public override IEnumerable<DnsZone> Zones => zones;
-
-        /// <inheritdoc/>
         public MockDnsServer()
             : base("in-memory.server.mock.")
         {
         }
+
+        /// <inheritdoc/>
+        public override IEnumerable<DnsZone> GetZones() => zones;
 
         /// <inheritdoc/>
         public override DnsZone CreateZone(DnsZone zoneTemplate)
@@ -91,5 +91,6 @@ namespace Dns.MockDnsServer
                 zones.Clear();
             }
         }
+
     }
 }

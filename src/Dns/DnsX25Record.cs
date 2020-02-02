@@ -3,8 +3,13 @@
 namespace Dns
 {
     /// <summary>
-    /// X25 Record
+    /// X.25 (X25) Record
     /// </summary>
+    /// <remarks>
+    /// Maps a DNS domain name to a Public Switched Data Network (PSDN) address,
+    /// such as X.121 addresses, which are typically used to identify
+    /// each point of service located on a public X.25 network. (RFC 1183)
+    /// </remarks>
     public class DnsX25Record : DnsRecord
     {
         /// <summary>

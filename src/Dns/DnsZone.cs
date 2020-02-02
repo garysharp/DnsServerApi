@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Dns
@@ -37,11 +38,6 @@ namespace Dns
         /// Zone Name Server Records
         /// </summary>
         public virtual IEnumerable<DnsNSRecord> NameServers => GetRecords(DnsRecordTypes.NS).Cast<DnsNSRecord>();
-
-        /// <summary>
-        /// List of DNS records
-        /// </summary>
-        public abstract IEnumerable<DnsRecord> Records { get; }
 
         /// <summary>
         /// Constructs a new instance of <see cref="DnsZone"/>.
@@ -116,12 +112,17 @@ namespace Dns
         }
 
         /// <summary>
+        /// Retrieves all DNS records
+        /// </summary>
+        /// <returns>List of DNS records</returns>
+        public abstract IEnumerable<DnsRecord> GetRecords();
+        /// <summary>
         /// Retrieves DNS records by record type
         /// </summary>
         /// <param name="recordType">Type of records to be retrieved</param>
         /// <returns>List of DNS records</returns>
         public virtual IEnumerable<DnsRecord> GetRecords(DnsRecordTypes recordType)
-            => Records.Where(r => r.Type == recordType);
+            => GetRecords().Where(r => r.Type == recordType);
         /// <summary>
         /// Retrieves DNS records by record type and name
         /// </summary>
@@ -129,14 +130,14 @@ namespace Dns
         /// <param name="name">Owner name</param>
         /// <returns>List of DNS records</returns>
         public virtual IEnumerable<DnsRecord> GetRecords(DnsRecordTypes recordType, string name)
-            => Records.Where(r => r.Type == recordType && string.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
+            => GetRecords().Where(r => r.Type == recordType && string.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
         /// <summary>
         /// Retrieves DNS records by name
         /// </summary>
         /// <param name="name">Owner name</param>
         /// <returns>List of DNS records</returns>
         public virtual IEnumerable<DnsRecord> GetRecords(string name)
-            => Records.Where(r => string.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
+            => GetRecords().Where(r => string.Equals(r.Name, name, StringComparison.OrdinalIgnoreCase));
 
         /// <summary>
         /// Adds a DNS record to the zone
@@ -228,7 +229,7 @@ namespace Dns
         /// <param name="query">Text query to search</param>
         /// <returns>List of records matching the query</returns>
         public virtual IEnumerable<DnsRecord> SearchRecords(string query)
-            => Records.Where(r => r.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0);
+            => GetRecords().Where(r => r.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0);
         /// <summary>
         /// Searches for DNS records of a given type
         /// </summary>
@@ -236,7 +237,7 @@ namespace Dns
         /// <param name="query">Text query to search</param>
         /// <returns>List of records matching the query</returns>
         public virtual IEnumerable<DnsRecord> SearchRecords(DnsRecordTypes recordType, string query)
-            => Records.Where(r => r.Type == recordType && r.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0);
+            => GetRecords(recordType).Where(r => r.ToString().IndexOf(query, StringComparison.OrdinalIgnoreCase) >= 0);
 
         /// <summary>
         /// Returns a textual representation of the current instance

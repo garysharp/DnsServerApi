@@ -3,8 +3,13 @@
 namespace Dns
 {
     /// <summary>
-    /// AFSDB Record
+    /// Andrew File System Database (AFSDB) Record
     /// </summary>
+    /// <remarks>
+    /// Indicates the location of either of the following standard server subtypes: an AFS volume location (cell database)
+    /// server or a Distributed Computing Environment (DCE) authenticated name server.
+    /// Also, supports other user-defined server subtypes that use the AFSDB resource record format. (RFC 1183)
+    /// </remarks>
     public class DnsAFSDBRecord : DnsRecord
     {
         /// <summary>

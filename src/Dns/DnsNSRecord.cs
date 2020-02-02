@@ -3,7 +3,7 @@
 namespace Dns
 {
     /// <summary>
-    /// Name Server Record
+    /// Name Server (NS) Record
     /// </summary>
     public class DnsNSRecord : DnsRecord
     {

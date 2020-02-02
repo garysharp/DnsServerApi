@@ -3,8 +3,15 @@
 namespace Dns
 {
     /// <summary>
-    /// Pointer Record
+    /// Pointer (PTR) Record
     /// </summary>
+    /// <remarks>
+    /// Points to a location in the domain name space. PTR records are typically used
+    /// in special domains to perform reverse lookups of address-to-name mappings.
+    /// Each record provides simple data that points to some other location in the
+    /// domain name space (usually a forward lookup zone). Where PTR records are used,
+    /// no additional section processing is implied or caused by their presence. (RFC 1035)
+    /// </remarks>
     public class DnsPTRRecord : DnsRecord
     {
         /// <summary>

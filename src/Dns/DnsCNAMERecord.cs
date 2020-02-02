@@ -3,8 +3,12 @@
 namespace Dns
 {
     /// <summary>
-    /// Canonical Name (Alias) Record
+    /// Alias/Canonical Name (CNAME) Record
     /// </summary>
+    /// <remarks>
+    ///  Indicates an alternate or alias DNS domain name for a name already specified in
+    ///  other resource record types used in this zone. (RFC 1035)
+    /// </remarks>
     public class DnsCNAMERecord : DnsRecord
     {
         /// <summary>

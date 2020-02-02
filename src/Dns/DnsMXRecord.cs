@@ -3,8 +3,15 @@
 namespace Dns
 {
     /// <summary>
-    /// Mail Exchange Record
+    /// Mail Exchange (MX) Record
     /// </summary>
+    /// <remarks>
+    /// Provides message routing to a specified mail exchange host that is acting as a
+    /// mail exchanger for a specified DNS domain name. MX records use a 16-bit integer to
+    /// indicate host priority in message routing where multiple mail exchange hosts are specified.
+    /// For each mail exchange host specified in this record type, a corresponding host
+    /// address (A) type record is needed. (RFC 1035)
+    /// </remarks>
     public class DnsMXRecord : DnsRecord
     {
         /// <summary>

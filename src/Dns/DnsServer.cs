@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Dns
 {
@@ -14,11 +15,6 @@ namespace Dns
         public string DomainName { get; }
 
         /// <summary>
-        /// List of DNS Zones
-        /// </summary>
-        public abstract IEnumerable<DnsZone> Zones { get; }
-
-        /// <summary>
         /// Constructs a new instance of <see cref="DnsServer"/>.
         /// </summary>
         /// <param name="domainName">DNS server domain name</param>
@@ -29,6 +25,12 @@ namespace Dns
 
             DomainName = domainName;
         }
+
+        /// <summary>
+        /// Retrieves all DNS zones
+        /// </summary>
+        /// <returns>List of DNS zones</returns>
+        public abstract IEnumerable<DnsZone> GetZones();
 
         /// <summary>
         /// Retrieves a DNS Zone

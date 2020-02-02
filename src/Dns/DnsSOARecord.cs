@@ -3,7 +3,7 @@
 namespace Dns
 {
     /// <summary>
-    /// Start of Zone of Authority Record
+    /// Start of Zone of Authority (SOA) Record
     /// </summary>
     public class DnsSOARecord : DnsRecord
     {

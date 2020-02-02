@@ -12,9 +12,6 @@ namespace Dns.MockDnsServer
         private readonly List<DnsRecord> records;
 
         /// <inheritdoc/>
-        public override IEnumerable<DnsRecord> Records => records;
-
-        /// <inheritdoc/>
         public MockDnsZone(MockDnsServer server, string domainName, DnsZoneType type, bool isReverseZone)
             : base(server, domainName, type, isReverseZone)
         {
@@ -44,6 +41,9 @@ namespace Dns.MockDnsServer
 
             this.records = records;
         }
+
+        /// <inheritdoc/>
+        public override IEnumerable<DnsRecord> GetRecords() => records;
 
         /// <inheritdoc/>
         public override DnsRecord CreateRecord(DnsRecord recordTemplate)
@@ -85,6 +85,6 @@ namespace Dns.MockDnsServer
             if (disposing)
                 records.Clear();
         }
-
+       
     }
 }

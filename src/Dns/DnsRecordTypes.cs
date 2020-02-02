@@ -6,7 +6,7 @@ namespace Dns
     /// DNS Record Types
     /// </summary>
     /// <remarks>
-    /// Based on IANA Assignments
+    /// Based on IANA Assignments (with some modifications)
     /// https://www.iana.org/assignments/dns-parameters/dns-parameters.xhtml#dns-parameters-4
     /// </remarks>
     public enum DnsRecordTypes : ushort
@@ -22,12 +22,12 @@ namespace Dns
         /// <summary>
         /// a mail destination (OBSOLETE - use MX). [RFC1035]
         /// </summary>
-        [Obsolete("Use MX")]
+        [Obsolete("Use MX; RFC973")]
         MD = 3,
         /// <summary>
         /// a mail forwarder (OBSOLETE - use MX). [RFC1035]
         /// </summary>
-        [Obsolete("Use MX")]
+        [Obsolete("Use MX; RFC973")]
         MF = 4,
         /// <summary>
         /// the canonical name for an alias. [RFC1035]
@@ -40,22 +40,27 @@ namespace Dns
         /// <summary>
         /// a mailbox domain name (EXPERIMENTAL). [RFC1035]
         /// </summary>
+        [Obsolete("Experimental; RFC2505")]
         MB = 7,
         /// <summary>
         /// a mail group member (EXPERIMENTAL). [RFC1035]
         /// </summary>
+        [Obsolete("Experimental; RFC2505")]
         MG = 8,
         /// <summary>
         /// a mail rename domain name (EXPERIMENTAL). [RFC1035]
         /// </summary>
+        [Obsolete("Experimental; RFC2505")]
         MR = 9,
         /// <summary>
         /// a null RR (EXPERIMENTAL). [RFC1035]
         /// </summary>
+        [Obsolete("RFC1035")]
         NULL = 10,
         /// <summary>
         /// a well known service description. [RFC1035]
         /// </summary>
+        [Obsolete("RFC1123 RFC1127")]
         WKS = 11,
         /// <summary>
         /// a domain name pointer. [RFC1035]
@@ -68,6 +73,7 @@ namespace Dns
         /// <summary>
         /// mailbox or mail list information. [RFC1035]
         /// </summary>
+        [Obsolete("Experimental; RFC2505")]
         MINFO = 14,
         /// <summary>
         /// mail exchange. [RFC1035]
@@ -108,10 +114,12 @@ namespace Dns
         /// <summary>
         /// for security signature. [RFC4034][RFC3755][RFC2535][RFC2536][RFC2537][RFC2931][RFC3110][RFC3008]
         /// </summary>
+        [Obsolete("RFC3755")]
         SIG = 24,
         /// <summary>
         /// for security key. [RFC4034][RFC3755][RFC2535][RFC2536][RFC2537][RFC2539][RFC3008][RFC3110]
         /// </summary>
+        [Obsolete("RFC3755")]
         KEY = 25,
         /// <summary>
         /// X.400 mail mapping information. [RFC2163]
@@ -132,7 +140,7 @@ namespace Dns
         /// <summary>
         /// Next Domain (OBSOLETE). [RFC3755][RFC2535]
         /// </summary>
-        [Obsolete]
+        [Obsolete("RFC3755")]
         NXT = 30,
         /// <summary>
         /// Endpoint Identifier. [Michael_Patton][http://ana-3.lcs.mit.edu/~jnc/nimrod/dns.txt]
@@ -165,7 +173,7 @@ namespace Dns
         /// <summary>
         /// A6 (OBSOLETE - use AAAA). [RFC3226][RFC2874][RFC6563]
         /// </summary>
-        [Obsolete("Use AAAA")]
+        [Obsolete("Use AAAA; RFC6563")]
         A6 = 38,
         /// <summary>
         /// DNAME. [RFC6672]
@@ -266,6 +274,7 @@ namespace Dns
         /// <summary>
         /// [RFC7208]
         /// </summary>
+        [Obsolete("RFC4408")]
         SPF = 99,
         /// <summary>
         /// [IANA-Reserved]
@@ -326,11 +335,12 @@ namespace Dns
         /// <summary>
         /// mailbox-related RRs (MB, MG or MR). [RFC1035]
         /// </summary>
+        [Obsolete("RFC2505")]
         MAILB = 253,
         /// <summary>
         /// mail agent RRs (OBSOLETE - see MX). [RFC1035]
         /// </summary>
-        [Obsolete("Use MX")]
+        [Obsolete("Use MX; RFC973")]
         MAILA = 254,
         /// <summary>
         /// A request for some or all records the server has available. [RFC1035][RFC6895][RFC8482]
@@ -364,5 +374,15 @@ namespace Dns
         /// DNSSEC Lookaside Validation. [RFC4431]
         /// </summary>
         DLV = 32769,
+        /// <summary>
+        /// Windows Internet Name Service [MS-WINSRA]
+        /// </summary>
+        [Obsolete]
+        WINS = 65281,
+        /// <summary>
+        /// Windows Internet Name Service reverse-lookup [MS-WINSRA]
+        /// </summary>
+        [Obsolete]
+        WINSR = 65282,
     }
 }

@@ -73,7 +73,7 @@ namespace Dns.MockDnsServer.Demo
             WriteLine(server);
 
             WriteLine("Zones:");
-            foreach (var zone in server.Zones)
+            foreach (var zone in server.GetZones())
             {
                 DumpDnsZone(zone);
             }
@@ -84,7 +84,7 @@ namespace Dns.MockDnsServer.Demo
             WriteLine(zone);
 
             WriteLine("Records:");
-            foreach (var record in zone.Records)
+            foreach (var record in zone.GetRecords())
             {
                 WriteLine(record);
             }

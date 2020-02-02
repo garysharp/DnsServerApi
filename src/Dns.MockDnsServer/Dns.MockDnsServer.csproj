@@ -7,7 +7,7 @@
     <Authors>Gary Sharp</Authors>
     <Product>DNS Server API - Mock DNS Server</Product>
     <Description>A sample in-memory DNS Server provider for mocking</Description>
-    <Copyright>Copyright 2019 Gary Sharp</Copyright>
+    <Copyright>Copyright 2020 Gary Sharp</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/garysharp/DnsServerApi</PackageProjectUrl>
     <RepositoryUrl>https://github.com/garysharp/DnsServerApi</RepositoryUrl>
@@ -19,6 +19,7 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>0.9.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

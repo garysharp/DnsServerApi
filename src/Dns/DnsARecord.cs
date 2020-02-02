@@ -3,12 +3,15 @@
 namespace Dns
 {
     /// <summary>
-    /// Host Record
+    /// IPv4 Host Address (A) Record
     /// </summary>
+    /// <remarks>
+    /// Maps a DNS domain name to a 32-bit IP version 4 address (RFC 1035).
+    /// </remarks>
     public class DnsARecord : DnsRecord
     {
         /// <summary>
-        /// IP address of the Host (A) record
+        /// IP address of the Host
         /// </summary>
         public DnsIpAddress IpAddress { get; set; }
 

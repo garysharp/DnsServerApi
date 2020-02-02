@@ -3,8 +3,16 @@
 namespace Dns
 {
     /// <summary>
-    /// Server Record
+    /// Service Location (SRV) Record
     /// </summary>
+    /// <remarks>
+    /// Allows administrators to use several servers for a single DNS domain, to easily
+    /// move a TCP/IP service from one host to another host with administration,
+    /// and to designate some service provider hosts as primary servers for a service
+    /// and other hosts as backups.
+    /// DNS clients that use a SRV-type query ask for a specific TCP/IP service and protocol
+    /// mapped to a specific DNS domain and receive the names of any available servers. (RFC 2052)
+    /// </remarks>
     public class DnsSRVRecord : DnsRecord
     {
         /// <summary>

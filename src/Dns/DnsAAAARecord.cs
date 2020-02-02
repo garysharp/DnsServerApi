@@ -3,8 +3,11 @@
 namespace Dns
 {
     /// <summary>
-    /// IPv6 Host Record
+    /// IPv6 Host Address (AAAA) Record
     /// </summary>
+    /// <remarks>
+    /// Maps a DNS domain name to a 128-bit IP version 6 address (RFC 1886). 
+    /// </remarks>
     public class DnsAAAARecord : DnsRecord
     {
         /// <summary>
