@@ -12,6 +12,9 @@ namespace Dns
     /// </remarks>
     public class DnsHINFORecord : DnsRecord
     {
+        private string cpuInitial;
+        private string osInitial;
+
         /// <summary>
         /// The CPU type of the owner of the record.
         /// </summary>
@@ -35,7 +38,10 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.HINFO, @class, timeToLive)
         {
             CPU = cpu;
+            cpuInitial = cpu;
+
             OS = os;
+            osInitial = os;
         }
 
         /// <summary>
@@ -88,6 +94,23 @@ namespace Dns
         public DnsHINFORecord(string name, TimeSpan timeToLive, string cpu, string os)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, cpu, os)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(cpuInitial, CPU, StringComparison.Ordinal) ||
+                !string.Equals(osInitial, OS, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            cpuInitial = CPU;
+            osInitial = OS;
         }
 
         /// <summary>

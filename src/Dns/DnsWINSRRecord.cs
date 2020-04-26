@@ -12,6 +12,11 @@ namespace Dns
     [Obsolete]
     public class DnsWINSRRecord : DnsRecord
     {
+        private uint mappingFlagInitial;
+        private uint lookupTimeoutInitial;
+        private uint cacheTimeoutInitial;
+        private string resultDomainInitial;
+
         /// <summary>
         /// A WINSR mapping flag that specifies whether the record must be included into the zone replication.
         /// It may have only two values: 0x80000000 and 0x00010000 corresponding to the replication and no-replication (local record) flags, respectively.
@@ -46,9 +51,16 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.WINSR, @class, timeToLive)
         {
             MappingFlag = mappingFlag;
+            mappingFlagInitial = mappingFlag;
+
             LookupTimeout = lookupTimeout;
+            lookupTimeoutInitial = lookupTimeout;
+
             CacheTimeout = cacheTimeout;
+            cacheTimeoutInitial = cacheTimeout;
+
             ResultDomain = resultDomain;
+            resultDomainInitial = resultDomain;
         }
 
         /// <summary>
@@ -109,6 +121,30 @@ namespace Dns
         public DnsWINSRRecord(string name, TimeSpan timeToLive, uint mappingFlag, uint lookupTimeout, uint cacheTimeout, string resultDomain)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, mappingFlag, lookupTimeout, cacheTimeout, resultDomain)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+        {
+            return
+                mappingFlagInitial != MappingFlag ||
+                lookupTimeoutInitial != LookupTimeout ||
+                cacheTimeoutInitial != CacheTimeout ||
+                !string.Equals(resultDomainInitial, ResultDomain, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            mappingFlagInitial = MappingFlag;
+            lookupTimeoutInitial = LookupTimeout;
+            cacheTimeoutInitial = CacheTimeout;
+            resultDomainInitial = ResultDomain;
         }
 
         /// <summary>

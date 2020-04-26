@@ -12,6 +12,8 @@ namespace Dns
     /// </remarks>
     public class DnsTXTRecord : DnsRecord
     {
+        private string descriptiveTextInitial;
+
         /// <summary>
         /// Descriptive text whose semantics depend on the owner domain.
         /// </summary>
@@ -33,6 +35,7 @@ namespace Dns
                 throw new ArgumentNullException(nameof(descriptiveText));
 
             DescriptiveText = descriptiveText;
+            descriptiveTextInitial = descriptiveText;
         }
 
         /// <summary>
@@ -81,6 +84,21 @@ namespace Dns
         public DnsTXTRecord(string name, TimeSpan timeToLive, string descriptiveText)
             : this(zone: null, name, timeToLive, descriptiveText)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(descriptiveTextInitial, DescriptiveText, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            descriptiveTextInitial = DescriptiveText;
         }
 
         /// <summary>

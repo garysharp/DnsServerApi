@@ -13,6 +13,9 @@ namespace Dns
     [Obsolete("Experimental; RFC 2505")]
     public class DnsMINFORecord : DnsRecord
     {
+        private string responsibleMailboxInitial;
+        private string errorMailboxInitial;
+
         /// <summary>
         /// A Fully Qualified Domain Name which specifies a mailbox which is responsible for the mailing list or mailbox specified in the record's Owner Name.
         /// </summary>
@@ -36,7 +39,10 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.MINFO, @class, timeToLive)
         {
             ResponsibleMailbox = responsibleMailbox;
+            responsibleMailboxInitial = responsibleMailbox;
+
             ErrorMailbox = errorMailbox;
+            errorMailboxInitial = errorMailbox;
         }
 
         /// <summary>
@@ -89,6 +95,23 @@ namespace Dns
         public DnsMINFORecord(string name, TimeSpan timeToLive, string responsibleMailbox, string errorMailbox)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, responsibleMailbox, errorMailbox)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(responsibleMailboxInitial, ResponsibleMailbox, StringComparison.Ordinal) ||
+                !string.Equals(errorMailboxInitial, ErrorMailbox, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            responsibleMailboxInitial = ResponsibleMailbox;
+            errorMailboxInitial = ErrorMailbox;
         }
 
         /// <summary>

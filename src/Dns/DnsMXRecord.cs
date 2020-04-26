@@ -14,6 +14,9 @@ namespace Dns
     /// </remarks>
     public class DnsMXRecord : DnsRecord
     {
+        private ushort preferenceInitial;
+        private string domainNameInitial;
+
         /// <summary>
         /// Preference given to this record
         /// </summary>
@@ -41,7 +44,10 @@ namespace Dns
                 throw new ArgumentNullException(domainName);
 
             Preference = preference;
+            preferenceInitial = preference;
+
             DomainName = domainName;
+            domainNameInitial = domainName;
         }
 
         /// <summary>
@@ -104,6 +110,23 @@ namespace Dns
         /// <returns>A record clone</returns>
         internal override DnsRecord Clone(DnsZone zone, object providerState)
             => new DnsMXRecord(zone, providerState, Name, Class, TimeToLive, Preference, DomainName);
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => preferenceInitial != Preference ||
+                !string.Equals(domainNameInitial, DomainName, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            preferenceInitial = Preference;
+            domainNameInitial = DomainName;
+        }
 
         /// <summary>
         /// Returns a textual representation of the current instance data

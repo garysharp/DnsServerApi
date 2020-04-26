@@ -11,6 +11,8 @@ namespace Dns
     [Obsolete("Experimental; RFC 2505")]
     public class DnsMBRecord : DnsRecord
     {
+        private string mbHostInitial;
+
         /// <summary>
         /// A Fully Qualified Domain Name which specifies a host of the mailbox specified in the record's Owner Name.
         /// </summary>
@@ -29,6 +31,7 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.MB, @class, timeToLive)
         {
             MBHost = mbHost;
+            mbHostInitial = mbHost;
         }
 
         /// <summary>
@@ -77,6 +80,21 @@ namespace Dns
         public DnsMBRecord(string name, TimeSpan timeToLive, string mbHost)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, mbHost)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(mbHostInitial, MBHost, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            mbHostInitial = MBHost;
         }
 
         /// <summary>

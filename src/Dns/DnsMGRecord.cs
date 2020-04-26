@@ -12,6 +12,8 @@ namespace Dns
     [Obsolete("Experimental; RFC 2505")]
     public class DnsMGRecord : DnsRecord
     {
+        private string mgMailboxInitial;
+
         /// <summary>
         /// A Fully Qualified Domain Name which specifies a mailbox which is a member of the mail group specified by the record's owner name.
         /// </summary>
@@ -30,6 +32,7 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.MG, @class, timeToLive)
         {
             MGMailbox = mgMailbox;
+            mgMailboxInitial = mgMailbox;
         }
 
         /// <summary>
@@ -78,6 +81,21 @@ namespace Dns
         public DnsMGRecord(string name, TimeSpan timeToLive, string mgMailbox)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, mgMailbox)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(mgMailboxInitial, MGMailbox, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            mgMailboxInitial = MGMailbox;
         }
 
         /// <summary>

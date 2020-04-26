@@ -14,6 +14,11 @@ namespace Dns
     [Obsolete("RFC3755")]
     public class DnsKEYRecord : DnsRecord
     {
+        private ushort flagsInitial;
+        private byte protocolInitial;
+        private byte algorithmInitial;
+        private string publicKeyInitial;
+
         /// <summary>
         /// Set of flags described in RFC 2535.
         /// </summary>
@@ -50,9 +55,16 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.KEY, @class, timeToLive)
         {
             Flags = flags;
+            flagsInitial = flags;
+
             Protocol = protocol;
+            protocolInitial = protocol;
+
             Algorithm = algorithm;
+            algorithmInitial = algorithm;
+
             PublicKey = publicKey;
+            publicKeyInitial = publicKey;
         }
 
         /// <summary>
@@ -113,6 +125,30 @@ namespace Dns
         public DnsKEYRecord(string name, TimeSpan timeToLive, ushort flags, byte protocol, byte algorithm, string publicKey)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, flags, protocol, algorithm, publicKey)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+        {
+            return
+                flagsInitial != Flags ||
+                protocolInitial != Protocol ||
+                algorithmInitial != Algorithm ||
+                !string.Equals(publicKeyInitial, PublicKey, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            flagsInitial = Flags;
+            protocolInitial = Protocol;
+            algorithmInitial = Algorithm;
+            publicKeyInitial = PublicKey;
         }
 
         /// <summary>

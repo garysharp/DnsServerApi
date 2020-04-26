@@ -12,6 +12,9 @@ namespace Dns
     /// </remarks>
     public class DnsAFSDBRecord : DnsRecord
     {
+        private ushort subtypeInitial;
+        private string hostNameInitial;
+
         /// <summary>
         /// Subtype of the host AFS server.
         /// </summary>
@@ -39,7 +42,10 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.AFSDB, @class, timeToLive)
         {
             Subtype = subtype;
+            subtypeInitial = subtype;
+            
             HostName = hostName;
+            hostNameInitial = hostName;
         }
 
         /// <summary>
@@ -92,6 +98,23 @@ namespace Dns
         public DnsAFSDBRecord(string name, TimeSpan timeToLive, ushort subtype, string hostName)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, subtype, hostName)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => subtypeInitial != Subtype ||
+                !string.Equals(hostNameInitial, HostName, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            subtypeInitial = Subtype;
+            hostNameInitial = HostName;
         }
 
         /// <summary>

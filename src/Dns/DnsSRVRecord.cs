@@ -15,6 +15,11 @@ namespace Dns
     /// </remarks>
     public class DnsSRVRecord : DnsRecord
     {
+        private ushort priorityInitial;
+        private ushort weightInitial;
+        private ushort portInitial;
+        private string targetDomainNameInitial;
+
         /// <summary>
         /// Priority of the this target host
         /// </summary>
@@ -73,9 +78,16 @@ namespace Dns
                 throw new ArgumentNullException(nameof(targetDomainName));
 
             Priority = priority;
+            priorityInitial = priority;
+
             Weight = weight;
+            weightInitial = weight;
+
             Port = port;
+            portInitial = port;
+
             TargetDomainName = targetDomainName;
+            targetDomainNameInitial = targetDomainName;
         }
 
         /// <summary>
@@ -141,6 +153,30 @@ namespace Dns
             ushort priority, ushort weight, ushort port, string targetDomainName)
             : this(zone: null, name, timeToLive, priority, weight, port, targetDomainName)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+        {
+            return
+                priorityInitial != Priority ||
+                weightInitial != Weight ||
+                portInitial != Port ||
+                !string.Equals(targetDomainNameInitial, TargetDomainName, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            priorityInitial = Priority;
+            weightInitial = Weight;
+            portInitial = Port;
+            targetDomainNameInitial = TargetDomainName;
         }
 
         /// <summary>

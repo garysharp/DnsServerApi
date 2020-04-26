@@ -7,6 +7,14 @@ namespace Dns
     /// </summary>
     public class DnsSOARecord : DnsRecord
     {
+        private string primaryServerInitial;
+        private string responsiblePersonInitial;
+        private uint serialInitial;
+        private TimeSpan refreshIntervalIntial;
+        private TimeSpan retryDelayInitial;
+        private TimeSpan expireLimitInitial;
+        private TimeSpan minimumTimeToLiveInitial;
+
         /// <summary>
         /// Domain Name of the original or primary source of data for this zone
         /// </summary>
@@ -70,12 +78,25 @@ namespace Dns
                 throw new ArgumentOutOfRangeException(nameof(minimumTimeToLive));
 
             PrimaryServer = primaryServer;
+            primaryServerInitial = primaryServer;
+
             ResponsiblePerson = responsiblePerson;
+            responsiblePersonInitial = responsiblePerson;
+
             Serial = serial;
+            serialInitial = serial;
+
             RefreshInterval = refreshInterval;
+            refreshIntervalIntial = refreshInterval;
+
             RetryDelay = retryDelay;
+            retryDelayInitial = retryDelay;
+
             ExpireLimit = expireLimit;
+            expireLimitInitial = expireLimit;
+
             MinimumTimeToLive = minimumTimeToLive;
+            minimumTimeToLiveInitial = minimumTimeToLive;
         }
 
         /// <summary>
@@ -160,6 +181,35 @@ namespace Dns
             : this(zone: null, name, timeToLive, primaryServer, responsiblePerson,
                   serial, refreshInterval, retryDelay, expireLimit, minimumTimeToLive)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+        {
+            return
+                !string.Equals(primaryServerInitial, PrimaryServer, StringComparison.Ordinal) ||
+                !string.Equals(responsiblePersonInitial, ResponsiblePerson, StringComparison.Ordinal) ||
+                serialInitial != Serial ||
+                refreshIntervalIntial != RefreshInterval ||
+                retryDelayInitial != RetryDelay ||
+                expireLimitInitial != ExpireLimit ||
+                minimumTimeToLiveInitial != MinimumTimeToLive;
+        }
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            primaryServerInitial = PrimaryServer;
+            responsiblePersonInitial = ResponsiblePerson;
+            serialInitial = Serial;
+            refreshIntervalIntial = RefreshInterval;
+            retryDelayInitial = RetryDelay;
+            expireLimitInitial = ExpireLimit;
         }
 
         /// <summary>

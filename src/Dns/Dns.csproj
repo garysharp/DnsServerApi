@@ -19,7 +19,7 @@
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <Version>0.9.0-beta</Version>
+    <Version>0.9.1-beta</Version>
   </PropertyGroup>
 
   <ItemGroup>

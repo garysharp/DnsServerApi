@@ -10,6 +10,8 @@ namespace Dns
     /// </remarks>
     public class DnsAAAARecord : DnsRecord
     {
+        private string ipV6AddressInitial;
+
         /// <summary>
         /// IP address of the Host (A) record
         /// </summary>
@@ -27,6 +29,7 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.AAAA, DnsRecordClasses.IN, timeToLive)
         {
             IpV6Address = ipV6Address;
+            ipV6AddressInitial = ipV6Address;
         }
 
         /// <summary>
@@ -50,6 +53,21 @@ namespace Dns
         public DnsAAAARecord(string name, TimeSpan timeToLive, string ipV6Address)
             : this(zone: null, name, timeToLive, ipV6Address)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(ipV6AddressInitial, IpV6Address, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            ipV6AddressInitial = IpV6Address;
         }
 
         /// <summary>

@@ -14,6 +14,16 @@ namespace Dns
     [Obsolete("RFC3755")]
     public class DnsSIGRecord : DnsRecord
     {
+        private ushort typeCoveredInitial;
+        private ushort algorithmInitial;
+        private ushort labelsInitial;
+        private uint originalTtlInitial;
+        private uint signatureExpirationInitial;
+        private uint signatureInceptionInitial;
+        private ushort keyTagInitial;
+        private string signerNameInitial;
+        private string signatureInitial;
+
         /// <summary>
         /// Type of the RR covered by this SIG.
         /// </summary>
@@ -81,14 +91,31 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.SIG, @class, timeToLive)
         {
             TypeCovered = typeCovered;
+            typeCoveredInitial = typeCovered;
+
             Algorithm = algorithm;
+            algorithmInitial = algorithm;
+
             Labels = labels;
+            labelsInitial = labels;
+
             OriginalTTL = originalTTL;
+            originalTtlInitial = originalTTL;
+
             SignatureExpiration = signatureExpiration;
+            signatureExpirationInitial = signatureExpiration;
+
             SignatureInception = signatureInception;
+            signatureInceptionInitial = signatureInception;
+
             KeyTag = keyTag;
+            keyTagInitial = keyTag;
+
             SignerName = signerName;
+            signerNameInitial = signerName;
+
             Signature = signature;
+            signatureInitial = signature;
         }
 
         /// <summary>
@@ -169,6 +196,40 @@ namespace Dns
         public DnsSIGRecord(string name, TimeSpan timeToLive, ushort typeCovered, ushort algorithm, ushort labels, uint originalTTL, uint signatureExpiration, uint signatureInception, ushort keyTag, string signerName, string signature)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, typeCovered, algorithm, labels, originalTTL, signatureExpiration, signatureInception, keyTag, signerName, signature)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+        {
+            return
+                typeCoveredInitial != TypeCovered ||
+                algorithmInitial != Algorithm ||
+                labelsInitial != Labels ||
+                originalTtlInitial != OriginalTTL ||
+                signatureExpirationInitial != SignatureExpiration ||
+                signatureInceptionInitial != SignatureInception ||
+                keyTagInitial != KeyTag ||
+                !string.Equals(signerNameInitial, SignerName, StringComparison.Ordinal) ||
+                !string.Equals(signatureInitial, Signature, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            typeCoveredInitial = TypeCovered;
+            algorithmInitial = Algorithm;
+            labelsInitial = Labels;
+            originalTtlInitial = OriginalTTL;
+            signatureExpirationInitial = SignatureExpiration;
+            signatureInceptionInitial = SignatureInception;
+            keyTagInitial = KeyTag;
+            signerNameInitial = SignerName;
+            signatureInitial = Signature;
         }
 
         /// <summary>

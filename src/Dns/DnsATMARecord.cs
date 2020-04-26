@@ -10,6 +10,9 @@ namespace Dns
     /// </remarks>
     public class DnsATMARecord : DnsRecord
     {
+        private ushort formatInitial;
+        private string atmAddressInitial;
+
         /// <summary>
         /// The ATM address format.
         /// </summary>
@@ -36,7 +39,10 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.ATMA, @class, timeToLive)
         {
             Format = format;
+            formatInitial = format;
+
             ATMAddress = aTMAddress;
+            atmAddressInitial = aTMAddress;
         }
 
         /// <summary>
@@ -89,6 +95,23 @@ namespace Dns
         public DnsATMARecord(string name, TimeSpan timeToLive, ushort format, string aTMAddress)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, format, aTMAddress)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => formatInitial != Format ||
+                !string.Equals(atmAddressInitial, ATMAddress, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            formatInitial = Format;
+            atmAddressInitial = ATMAddress;
         }
 
         /// <summary>

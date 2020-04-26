@@ -14,6 +14,9 @@ namespace Dns
     /// </remarks>
     public class DnsRTRecord : DnsRecord
     {
+        private ushort preferenceInitial;
+        private string intermediateHostInitial;
+
         /// <summary>
         /// The preference given to this RR among others at the same owner.  Lower values are preferred.
         /// </summary>
@@ -37,7 +40,10 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.RT, @class, timeToLive)
         {
             Preference = preference;
+            preferenceInitial = preference;
+
             IntermediateHost = intermediateHost;
+            intermediateHostInitial = intermediateHost;
         }
 
         /// <summary>
@@ -90,6 +96,23 @@ namespace Dns
         public DnsRTRecord(string name, TimeSpan timeToLive, ushort preference, string intermediateHost)
             : this(zone: null, name, timeToLive, preference, intermediateHost)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => preferenceInitial != Preference ||
+                !string.Equals(intermediateHostInitial, IntermediateHost, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            preferenceInitial = Preference;
+            intermediateHostInitial = IntermediateHost;
         }
 
         /// <summary>

@@ -66,6 +66,9 @@ namespace Dns.MockDnsServer
             // this mock implementation tracks by-reference records, so no action is required to save
             if (!ReferenceEquals(record.Zone, this) || !records.Any(r => ReferenceEquals(r, record)))
                 throw new ArgumentException("Record is not part of this zone");
+
+            // let the record know it was saved so it can track changes appropriately
+            SavedRecord(record);
         }
 
         /// <inheritdoc/>

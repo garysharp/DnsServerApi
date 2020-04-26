@@ -11,6 +11,8 @@ namespace Dns
     [Obsolete("Use DnsMXRecord; RFC 973")]
     public class DnsMDRecord : DnsRecord
     {
+        private string mdHostInitial;
+
         /// <summary>
         /// A Fully Qualified Domain Name which specifies a host which has a mail agent which should be able to deliver mail for the specified domain.
         /// </summary>
@@ -29,6 +31,7 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.MD, @class, timeToLive)
         {
             MDHost = mdHost;
+            mdHostInitial = mdHost;
         }
 
         /// <summary>
@@ -77,6 +80,21 @@ namespace Dns
         public DnsMDRecord(string name, TimeSpan timeToLive, string mdHost)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, mdHost)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(mdHostInitial, MDHost, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            mdHostInitial = MDHost;
         }
 
         /// <summary>

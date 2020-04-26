@@ -197,6 +197,13 @@ namespace Dns.WindowsDnsServer
         internal WindowsDnsRecordState GetRecordStateInternal(DnsRecord record) => GetRecordState(record) as WindowsDnsRecordState;
 
         /// <summary>
+        /// To be called by the provider when the changes to a record are saved
+        /// </summary>
+        /// <param name="record">Record that was saved</param>
+        internal void SavedRecordInternal(DnsRecord record)
+            => SavedRecord(record);
+
+        /// <summary>
         /// Clones the record associating it with the provider state
         /// </summary>
         /// <param name="record">Record to be cloned</param>

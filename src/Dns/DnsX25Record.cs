@@ -12,6 +12,8 @@ namespace Dns
     /// </remarks>
     public class DnsX25Record : DnsRecord
     {
+        private string psdnAddressInitial;
+
         /// <summary>
         /// PSDN Address
         /// </summary>
@@ -30,6 +32,7 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.X25, @class, timeToLive)
         {
             PsdnAddress = psdnAddress;
+            psdnAddressInitial = psdnAddress;
         }
 
         /// <summary>
@@ -78,6 +81,21 @@ namespace Dns
         public DnsX25Record(string name, TimeSpan timeToLive, string psdnAddress)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, psdnAddress)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(psdnAddressInitial, PsdnAddress, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            psdnAddressInitial = PsdnAddress;
         }
 
         /// <summary>

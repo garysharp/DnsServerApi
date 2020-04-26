@@ -10,6 +10,8 @@ namespace Dns
     /// </remarks>
     public class DnsARecord : DnsRecord
     {
+        private DnsIpAddress ipAddressInitial;
+
         /// <summary>
         /// IP address of the Host
         /// </summary>
@@ -27,6 +29,7 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.A, DnsRecordClasses.IN, timeToLive)
         {
             IpAddress = ipAddress;
+            ipAddressInitial = ipAddress;
         }
 
         /// <summary>
@@ -50,6 +53,21 @@ namespace Dns
         public DnsARecord(string name, TimeSpan timeToLive, DnsIpAddress ipAddress)
             : this(zone: null, name, timeToLive, ipAddress)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => ipAddressInitial != IpAddress;
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            ipAddressInitial = IpAddress;
         }
 
         /// <summary>

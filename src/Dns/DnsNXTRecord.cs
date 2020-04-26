@@ -13,12 +13,15 @@ namespace Dns
     [Obsolete("Considered obsolete by Internet Assigned Numbers Authority (IANA)")]
     public class DnsNXTRecord : DnsRecord
     {
+        private string nextDomainNameInitial;
+        private string typesInitial;
+
         /// <summary>
         /// Next Domain Name.
         /// </summary>
         public string NextDomainName { get; set; }
         /// <summary>
-        /// Types is the space separated list of the RR typesmnemonics that exist for the owner name of the NXT RR. 
+        /// Types is the space separated list of the RR types mnemonics that exist for the owner name of the NXT RR. 
         /// </summary>
         public string Types { get; set; }
 
@@ -31,12 +34,15 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nextDomainName">Next Domain Name.</param>
-        /// <param name="types">Types is the space separated list of the RR typesmnemonics that exist for the owner name of the NXT RR. </param>
+        /// <param name="types">Types is the space separated list of the RR types mnemonics that exist for the owner name of the NXT RR. </param>
         private DnsNXTRecord(DnsZone zone, object providerState, string name, DnsRecordClasses @class, TimeSpan timeToLive, string nextDomainName, string types)
             : base(zone, providerState, name, DnsRecordTypes.NXT, @class, timeToLive)
         {
             NextDomainName = nextDomainName;
+            nextDomainNameInitial = nextDomainName;
+
             Types = types;
+            typesInitial = types;
         }
 
         /// <summary>
@@ -47,7 +53,7 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nextDomainName">Next Domain Name.</param>
-        /// <param name="types">Types is the space separated list of the RR typesmnemonics that exist for the owner name of the NXT RR. </param>
+        /// <param name="types">Types is the space separated list of the RR types mnemonics that exist for the owner name of the NXT RR. </param>
         public DnsNXTRecord(DnsZone zone, string name, DnsRecordClasses @class, TimeSpan timeToLive, string nextDomainName, string types)
             : this(zone, providerState: null, name, @class, timeToLive, nextDomainName, types)
         {
@@ -60,7 +66,7 @@ namespace Dns
         /// <param name="class">Record class</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nextDomainName">Next Domain Name.</param>
-        /// <param name="types">Types is the space separated list of the RR typesmnemonics that exist for the owner name of the NXT RR. </param>
+        /// <param name="types">Types is the space separated list of the RR types mnemonics that exist for the owner name of the NXT RR. </param>
         public DnsNXTRecord(string name, DnsRecordClasses @class, TimeSpan timeToLive, string nextDomainName, string types)
             : this(zone: null, name, @class, timeToLive, nextDomainName, types)
         {
@@ -73,7 +79,7 @@ namespace Dns
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nextDomainName">Next Domain Name.</param>
-        /// <param name="types">Types is the space separated list of the RR typesmnemonics that exist for the owner name of the NXT RR. </param>
+        /// <param name="types">Types is the space separated list of the RR types mnemonics that exist for the owner name of the NXT RR. </param>
         public DnsNXTRecord(DnsZone zone, string name, TimeSpan timeToLive, string nextDomainName, string types)
             : this(zone, providerState: null, name, DnsRecordClasses.IN, timeToLive, nextDomainName, types)
         {
@@ -85,10 +91,27 @@ namespace Dns
         /// <param name="name">Owner name</param>
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="nextDomainName">Next Domain Name.</param>
-        /// <param name="types">Types is the space separated list of the RR typesmnemonics that exist for the owner name of the NXT RR. </param>
+        /// <param name="types">Types is the space separated list of the RR types mnemonics that exist for the owner name of the NXT RR. </param>
         public DnsNXTRecord(string name, TimeSpan timeToLive, string nextDomainName, string types)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, nextDomainName, types)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(nextDomainNameInitial, NextDomainName, StringComparison.Ordinal) ||
+                !string.Equals(typesInitial, Types, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            nextDomainNameInitial = NextDomainName;
+            typesInitial = Types;
         }
 
         /// <summary>

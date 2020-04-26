@@ -14,6 +14,8 @@ namespace Dns
     [Obsolete("Experimental; RFC 2505")]
     public class DnsMRRecord : DnsRecord
     {
+        private string mrMailboxInitial;
+
         /// <summary>
         /// A Fully Qualified Domain Name which specifies a mailbox which is the proper rename of the mailbox specified in the record's Owner Name.
         /// </summary>
@@ -32,6 +34,7 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.MR, @class, timeToLive)
         {
             MRMailbox = mrMailbox;
+            mrMailboxInitial = mrMailbox;
         }
 
         /// <summary>
@@ -80,6 +83,21 @@ namespace Dns
         public DnsMRRecord(string name, TimeSpan timeToLive, string mrMailbox)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, mrMailbox)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(mrMailboxInitial, MRMailbox, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            mrMailboxInitial = MRMailbox;
         }
 
         /// <summary>

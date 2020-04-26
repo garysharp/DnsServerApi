@@ -14,6 +14,10 @@ namespace Dns
     [Obsolete("RFC1123 RFC1127")]
     public class DnsWKSRecord : DnsRecord
     {
+        private string ipProtocolInitial;
+        private DnsIpAddress internetAddressInitial;
+        private string servicesInitial;
+
         /// <summary>
         /// A string representing the IP protocol for this record. Values included 'udp' or 'tcp'.
         /// </summary>
@@ -42,8 +46,13 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.WKS, @class, timeToLive)
         {
             InternetAddress = internetAddress;
+            internetAddressInitial = internetAddress;
+
             IpProtocol = ipProtocol;
+            ipProtocolInitial = ipProtocol;
+
             Services = services;
+            servicesInitial = services;
         }
 
         /// <summary>
@@ -100,6 +109,28 @@ namespace Dns
         public DnsWKSRecord(string name, TimeSpan timeToLive, string ipProtocol, DnsIpAddress internetAddress, string services)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, ipProtocol, internetAddress, services)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+        {
+            return
+                !string.Equals(ipProtocolInitial, IpProtocol, StringComparison.Ordinal) ||
+                internetAddressInitial != InternetAddress ||
+                !string.Equals(servicesInitial, Services, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            ipProtocolInitial = IpProtocol;
+            internetAddressInitial = InternetAddress;
+            servicesInitial = Services;
         }
 
         /// <summary>

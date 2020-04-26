@@ -11,6 +11,8 @@ namespace Dns
     /// </remarks>
     public class DnsCNAMERecord : DnsRecord
     {
+        private string primaryNameInitial;
+
         /// <summary>
         /// Primary Name for <see cref="DnsRecord.Name"/>
         /// </summary>
@@ -32,6 +34,7 @@ namespace Dns
                 throw new ArgumentNullException(nameof(primaryName));
 
             PrimaryName = primaryName;
+            primaryNameInitial = primaryName;
         }
 
         /// <summary>
@@ -80,6 +83,21 @@ namespace Dns
         public DnsCNAMERecord(string name, TimeSpan timeToLive, string primaryName)
             : this(zone: null, name, timeToLive, primaryName)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(primaryNameInitial, PrimaryName, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            primaryNameInitial = PrimaryName;
         }
 
         /// <summary>

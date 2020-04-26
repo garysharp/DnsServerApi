@@ -7,6 +7,8 @@ namespace Dns
     /// </summary>
     public abstract class DnsRecord
     {
+        private TimeSpan timeToLiveInitial;
+
         /// <summary>
         /// Associated zone
         /// </summary>
@@ -53,7 +55,9 @@ namespace Dns
             Name = name;
             Type = type;
             Class = @class;
+            
             TimeToLive = timeToLive;
+            timeToLiveInitial = timeToLive;
         }
 
         /// <summary>
@@ -93,6 +97,20 @@ namespace Dns
         }
 
         /// <summary>
+        /// Indicates whether the record has been changed and requires saving
+        /// </summary>
+        /// <returns>True if the record has changed</returns>
+        public bool HasChanges()
+        {
+            // check base record state
+            if (TimeToLive != timeToLiveInitial)
+                return true;
+
+            // check inherited state
+            return HasDataChanges();
+        }
+
+        /// <summary>
         /// Saves this record to the DNS zone
         /// </summary>
         public void Save()
@@ -102,6 +120,29 @@ namespace Dns
 
             Zone.SaveRecord(this);
         }
+
+        /// <summary>
+        /// Called when the provider indicates changes have been saved
+        /// </summary>
+        internal void ProviderSaved()
+        {
+            // reset original value to current value
+            timeToLiveInitial = TimeToLive;
+
+            // let inheriting records know changes are persisted
+            ProviderDataSaved();
+        }
+
+        /// <summary>
+        /// Allows inheriting records to inform a provider whether the record has changed and requires saving
+        /// </summary>
+        /// <returns></returns>
+        protected abstract bool HasDataChanges();
+
+        /// <summary>
+        /// Called when the provider indicates changes have been saved
+        /// </summary>
+        protected abstract void ProviderDataSaved();
 
         /// <summary>
         /// Clones the record associating it with the provided zone
@@ -122,6 +163,6 @@ namespace Dns
         /// </summary>
         /// <returns>A textual representation of the current instance</returns>
         public override string ToString()
-            => $"{Type} Record [{Name} = {GetDataText()}]";
+            => $"{Type} Record [{Name} = {GetDataText()}]{(HasChanges() ? "*" : null)}";
     }
 }

@@ -11,6 +11,9 @@ namespace Dns
     /// </remarks>
     public class DnsISDNRecord : DnsRecord
     {
+        private string isdnNumberInitial;
+        private string subAddressInitial;
+
         /// <summary>
         /// The ISDN number and DDI of the record's owner.
         /// </summary>
@@ -34,7 +37,10 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.ISDN, @class, timeToLive)
         {
             ISDNNumber = isdnNumber;
+            isdnNumberInitial = isdnNumber;
+
             SubAddress = subAddress;
+            subAddressInitial = subAddress;
         }
 
         /// <summary>
@@ -87,6 +93,23 @@ namespace Dns
         public DnsISDNRecord(string name, TimeSpan timeToLive, string isdnNumber, string subAddress)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, isdnNumber, subAddress)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(isdnNumberInitial, ISDNNumber, StringComparison.Ordinal) ||
+                !string.Equals(subAddressInitial, SubAddress, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            isdnNumberInitial = ISDNNumber;
+            subAddressInitial = SubAddress;
         }
 
         /// <summary>

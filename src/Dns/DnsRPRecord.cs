@@ -12,6 +12,9 @@ namespace Dns
     /// </remarks>
     public class DnsRPRecord : DnsRecord
     {
+        private string rpMailboxInitial;
+        private string txtDomainNameInitial;
+
         /// <summary>
         /// A Fully Qualified Domain Name that specifies the mailbox for the responsible person.
         /// </summary>
@@ -35,7 +38,10 @@ namespace Dns
             : base(zone, providerState, name, DnsRecordTypes.RP, @class, timeToLive)
         {
             RPMailbox = rpMailbox;
+            rpMailboxInitial = rpMailbox;
+
             TXTDomainName = txtDomainName;
+            txtDomainNameInitial = txtDomainName;
         }
 
         /// <summary>
@@ -88,6 +94,23 @@ namespace Dns
         public DnsRPRecord(string name, TimeSpan timeToLive, string rpMailbox, string txtDomainName)
             : this(zone: null, name, DnsRecordClasses.IN, timeToLive, rpMailbox, txtDomainName)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(rpMailboxInitial, RPMailbox, StringComparison.Ordinal) ||
+                !string.Equals(txtDomainNameInitial, TXTDomainName, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            rpMailboxInitial = RPMailbox;
+            txtDomainNameInitial = TXTDomainName;
         }
 
         /// <summary>

@@ -194,8 +194,15 @@ namespace Dns
         /// <summary>
         /// Updates a DNS record
         /// </summary>
-        /// <param name="record">True if the record was updated, otherwise false</param>
+        /// <param name="record">Record to be saved</param>
         public abstract void SaveRecord(DnsRecord record);
+
+        /// <summary>
+        /// To be called by the provider when the changes to a record are saved
+        /// </summary>
+        /// <param name="record">Record that was saved</param>
+        protected void SavedRecord(DnsRecord record)
+            => record.ProviderSaved();
 
         /// <summary>
         /// Removes a DNS record from the zone

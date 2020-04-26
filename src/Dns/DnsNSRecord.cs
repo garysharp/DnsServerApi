@@ -7,6 +7,8 @@ namespace Dns
     /// </summary>
     public class DnsNSRecord : DnsRecord
     {
+        private string nameServerInitial;
+
         /// <summary>
         /// A host which should be authoritative for the domain
         /// </summary>
@@ -28,6 +30,7 @@ namespace Dns
                 throw new ArgumentNullException(nameof(nameServer));
 
             NameServer = nameServer;
+            nameServerInitial = nameServer;
         }
 
         /// <summary>
@@ -76,6 +79,21 @@ namespace Dns
         public DnsNSRecord(string name, TimeSpan timeToLive, string nameServer)
             : this(zone: null, name, timeToLive, nameServer)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(nameServerInitial, NameServer, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            nameServerInitial = NameServer;
         }
 
         /// <summary>

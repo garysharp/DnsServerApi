@@ -347,6 +347,10 @@ namespace Dns.WindowsDnsServer
             if (state == null)
                 throw new ArgumentException("Record must be created by the provider");
 
+            // only save if the record has changed
+            if (!record.HasChanges())
+                return;
+
             using (var instance = zone.server.WmiGetInstance(state.WmiPath))
             {
                 using (var wmiParams = instance.GetMethodParameters("Modify"))
@@ -361,6 +365,9 @@ namespace Dns.WindowsDnsServer
                     var newState = new WindowsDnsRecordState(wmiPath);
 
                     zone.SetRecordStateInternal(record, newState);
+                    
+                    // let the record know it was saved so it can track changes appropriately
+                    zone.SavedRecordInternal(record);
                 }
             }
         }

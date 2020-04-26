@@ -14,6 +14,8 @@ namespace Dns
     /// </remarks>
     public class DnsPTRRecord : DnsRecord
     {
+        private string domainNameInitial;
+
         /// <summary>
         /// Pointer Domain Name
         /// </summary>
@@ -43,6 +45,7 @@ namespace Dns
                 throw new ArgumentNullException(nameof(domainName));
 
             DomainName = domainName;
+            domainNameInitial = domainName;
         }
 
         /// <summary>
@@ -143,6 +146,21 @@ namespace Dns
         public DnsPTRRecord(DnsIpAddress address, TimeSpan timeToLive, string domainName)
             : this(zone: null, $"{address.GetFlipped()}.in-addr.arpa", timeToLive, domainName)
         {
+        }
+
+        /// <summary>
+        /// Indicates whether the record changed
+        /// </summary>
+        /// <returns></returns>
+        protected override bool HasDataChanges()
+            => !string.Equals(domainNameInitial, DomainName, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Resets original value to current value
+        /// </summary>
+        protected override void ProviderDataSaved()
+        {
+            domainNameInitial = DomainName;
         }
 
         /// <summary>
