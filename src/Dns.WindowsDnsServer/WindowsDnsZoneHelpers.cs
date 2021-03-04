@@ -80,7 +80,7 @@ namespace Dns.WindowsDnsServer
 
                     using (var wmiZoneReference = wmiZoneClass.InvokeMethod("CreateZone", createZoneParameters, null))
                     {
-                        var wmiZonePath = $"{server.wmiPath.NamespacePath}:{(string)wmiZoneReference.GetPropertyValue("RR")}";
+                        var wmiZonePath = $"{server.wmiScope.Path.NamespacePath}:{(string)wmiZoneReference.GetPropertyValue("RR")}";
                         var wmiZone = server.WmiGetInstance(wmiZonePath);
                         return new WindowsDnsZone(server, wmiZone);
                     }

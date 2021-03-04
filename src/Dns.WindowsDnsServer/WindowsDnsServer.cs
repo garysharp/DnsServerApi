@@ -15,7 +15,6 @@ namespace Dns.WindowsDnsServer
         private readonly ConnectionOptions connectionOptions;
         internal readonly ManagementScope wmiScope;
         internal readonly ManagementObject wmiServer;
-        internal readonly ManagementPath wmiPath;
 
         private WindowsDnsServer(string domainName, ConnectionOptions connectionOptions)
             : base(domainName)
@@ -29,7 +28,6 @@ namespace Dns.WindowsDnsServer
             if (wmiServer == null)
                 throw new ArgumentException("DNS Server instance not found", nameof(domainName));
 
-            wmiPath = new ManagementPath((string)wmiServer["__PATH"]);
             Name = (string)wmiServer.Properties["Name"].Value;
         }
 

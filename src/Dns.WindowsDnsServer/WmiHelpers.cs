@@ -38,7 +38,7 @@ namespace Dns.WindowsDnsServer
 
         public static ManagementObject WmiGetInstance(this WindowsDnsServer server, string wmiClass, string wmiKeys)
         {
-            var wmiPath = new ManagementPath($"{server.wmiPath.NamespacePath}:{wmiClass}.{wmiKeys}");
+            var wmiPath = new ManagementPath($"{server.wmiScope.Path.NamespacePath}:{wmiClass}.{wmiKeys}");
 
             var wmiInstance = new ManagementObject(server.wmiScope, wmiPath, wmiDefaultGetOptions);
 
