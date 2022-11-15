@@ -216,8 +216,8 @@ namespace Dns
         /// <param name="timeToLive">Record time to live (TTL)</param>
         /// <param name="descriptiveText">Descriptive text whose semantics depend on the owner domain.</param>
         /// <returns>Resulting created record</returns>
-        public static DnsTXTRecord CreateTXTRecord(this DnsZone zone, DnsIpAddress address, TimeSpan timeToLive, string descriptiveText)
-            => (DnsTXTRecord)zone.CreateRecord(new DnsTXTRecord(zone, address, timeToLive, descriptiveText));
+        public static DnsTXTRecord CreateTXTRecord(this DnsZone zone, string name, TimeSpan timeToLive, string descriptiveText)
+            => (DnsTXTRecord)zone.CreateRecord(new DnsTXTRecord(zone, name, timeToLive, descriptiveText));
 
         /// <summary>
         /// Adds a X.25 (X25) record to the zone
